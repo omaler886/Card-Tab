@@ -5368,9 +5368,39 @@ export default {
           return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
         });
       };
-      const getConfiguredBackgroundImages = (env) => {
+      const normalizeBingMarket = (value) => {
+        const market = String(value || '').trim();
+        return /^[A-Za-z]{2,3}(?:-[A-Za-z]{2,4})?$/.test(market) ? market : 'zh-CN';
+      };
+      const fetchBingBackgroundImages = async (market) => {
+        const targetUrl = `https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=8&mkt=${encodeURIComponent(normalizeBingMarket(market))}`;
+        try {
+          const response = await fetch(targetUrl);
+          if (!response.ok) {
+            return [];
+          }
+          const payload = await response.json();
+          const images = Array.isArray(payload && payload.images) ? payload.images : [];
+          return images
+            .map((item) => {
+              const rawUrl = String((item && item.url) || '').trim();
+              if (!rawUrl) {
+                return '';
+              }
+              return rawUrl.startsWith('http') ? rawUrl : `https://www.bing.com${rawUrl}`;
+            })
+            .filter(Boolean);
+        } catch (error) {
+          return [];
+        }
+      };
+      const getConfiguredBackgroundImages = async (env) => {
         const configured = parseStringList(env.BACKGROUND_IMAGE_URLS);
-        return configured.length ? configured : createDefaultBackgroundImages();
+        if (configured.length) {
+          return configured;
+        }
+        const bingImages = await fetchBingBackgroundImages(env.BACKGROUND_BING_MARKET);
+        return bingImages.length ? bingImages : createDefaultBackgroundImages();
       };
       const loadInitialPublicLinksPayload = async (userId) => {
         if (!env.CARD_ORDER || typeof env.CARD_ORDER.get !== 'function') {
@@ -5410,7 +5440,7 @@ export default {
 
       if (url.pathname === '/') {
         const initialLinksPayload = await loadInitialPublicLinksPayload('testUser');
-        const backgroundImageUrls = getConfiguredBackgroundImages(env);
+        const backgroundImageUrls = await getConfiguredBackgroundImages(env);
         const htmlContent = HTML_CONTENT
           .replace('__INITIAL_LINKS_PAYLOAD__', sanitizeForInlineScript(initialLinksPayload))
           .replace('__BACKGROUND_IMAGE_URLS__', sanitizeForInlineScript(backgroundImageUrls));

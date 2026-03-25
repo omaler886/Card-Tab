@@ -9,6 +9,7 @@
 | `ADMIN_PASSWORD` | Secret | 是 | 后台管理密码 |
 | `TOKEN_EXPIRY_MINUTES` | Variable | 否 | 登录有效期，单位分钟，默认 `30` |
 | `BACKGROUND_IMAGE_URLS` | Variable / Secret | 否 | 随机背景图列表 |
+| `BACKGROUND_BING_MARKET` | Variable | 否 | 默认 Bing 壁纸市场，默认 `zh-CN` |
 
 ## `BACKGROUND_IMAGE_URLS` 写法
 
@@ -47,8 +48,24 @@ https://example.com/bg-01.jpg,https://example.com/bg-02.webp,https://example.com
 
 ## 不配置背景图时会怎样
 
-- Worker 会自动回退到内置的 SVG 背景图组
+- Worker 会先拉取 Bing 最近一组壁纸并随机轮播
+- 如果 Bing 源不可用，再回退到内置的 SVG 背景图组
 - 仍然会保留随机切换和缓慢漂移动画
+
+## Bing 壁纸市场
+
+如果你不想自己提供 `BACKGROUND_IMAGE_URLS`，可以只设置：
+
+```text
+BACKGROUND_BING_MARKET=zh-CN
+```
+
+常见值：
+
+- `zh-CN`
+- `en-US`
+- `ja-JP`
+- `en-GB`
 
 ## 天气说明
 
