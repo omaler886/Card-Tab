@@ -4736,7 +4736,7 @@ const HTML_CONTENT = `
         if (mapped) {
             return { timezone: normalized, query: mapped.query, label: mapped.label };
         }
-        if (/^Etc\//.test(normalized) || normalized === 'UTC') {
+        if (normalized.startsWith('Etc/') || normalized === 'UTC') {
             return { timezone: normalized, query: 'London', label: 'UTC' };
         }
 
@@ -5212,7 +5212,7 @@ export default {
         if (mapped) {
           return { timezone: normalized, query: mapped.query, label: mapped.label };
         }
-        if (/^Etc\//.test(normalized) || normalized === 'UTC') {
+        if (normalized.startsWith('Etc/') || normalized === 'UTC') {
           return { timezone: normalized, query: 'London', label: 'UTC' };
         }
         const parts = normalized.split('/');
