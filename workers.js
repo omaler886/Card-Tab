@@ -145,27 +145,25 @@ const HTML_CONTENT = `
         top: 0;
         left: 0;
         right: 0;
-        background: rgba(248, 246, 242, 0.4);
+        background-color: #f8f6f2;
         border-bottom: 1px solid rgba(67, 184, 131, 0.12);
         z-index: 1000;
-        padding: 8px 10px;
-        transition: background-color 0.55s ease, border-color 0.55s ease, box-shadow 0.55s ease, backdrop-filter 0.55s ease;
-        height: 142px;
-        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
-        backdrop-filter: blur(22px) saturate(145%);
-        -webkit-backdrop-filter: blur(22px) saturate(145%);
+        padding: 9px 10px 8px;
+        transition: all 0.3s ease;
+        height: 144px;
+        box-shadow: none;
     }
 
     body.dark-theme .fixed-elements {
-        background: rgba(14, 18, 27, 0.44);
-        border-bottom-color: rgba(120, 154, 214, 0.16);
-        box-shadow: 0 14px 34px rgba(3, 8, 18, 0.34);
+        background-color: #121418;
+        border-bottom-color: rgba(93, 127, 185, 0.18);
+        box-shadow: none;
     }
 
     /* 分类快捷按钮容器样式移至搜索栏内 */
 
     .category-button {
-        padding: 7px 14px;
+        padding: 5px 12px;
         border-radius: 999px;
         background-color: #f9fafb;
         color: #43b883;
@@ -174,7 +172,7 @@ const HTML_CONTENT = `
         font-size: 12px;
         font-weight: 500;
         transition: all 0.2s ease;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
         flex: 0 0 auto;
         white-space: nowrap;
         margin: 0 2px;
@@ -183,9 +181,9 @@ const HTML_CONTENT = `
     }
 
     body.dark-theme .category-button {
-        background-color: rgba(37, 44, 56, 0.76);
+        background-color: #252830;
         color: #93b1e9;
-        box-shadow: 0 6px 16px rgba(4, 10, 22, 0.2);
+        box-shadow: none;
     }
 
     .category-button:hover {
@@ -199,7 +197,7 @@ const HTML_CONTENT = `
     .category-button.active {
         background-color: #43b883;
         color: white;
-        box-shadow: 0 8px 18px rgba(67, 184, 131, 0.22);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
         transform: translateY(-1px);
         font-weight: 600;
     }
@@ -230,33 +228,24 @@ const HTML_CONTENT = `
 
     /* 一言模块样式 */
     #hitokoto {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 8px;
-        min-height: 30px;
-        padding: 6px 14px;
+        display: block;
+        margin: 4px auto 10px;
+        min-height: 0;
+        padding: 0;
         font-size: 13px;
-        color: #5f6c74;
+        color: #888;
         font-style: italic;
-        max-width: 640px;
+        max-width: 600px;
         margin-left: auto;
         margin-right: auto;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.34);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
-        backdrop-filter: blur(14px) saturate(140%);
-        -webkit-backdrop-filter: blur(14px) saturate(140%);
-        transition: background-color 0.45s ease, color 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease;
+        transition: all 0.3s ease;
     }
 
     #hitokoto a {
-        color: inherit;
+        color: #43b883;
         text-decoration: none;
         display: block;
         max-width: 100%;
-        text-shadow: 0 1px 1px rgba(255, 255, 255, 0.22);
         transition: color 0.3s ease;
     }
 
@@ -265,15 +254,11 @@ const HTML_CONTENT = `
     }
 
     body.dark-theme #hitokoto {
-        color: #c8d3dd;
-        background: rgba(12, 17, 26, 0.42);
-        border-color: rgba(124, 164, 234, 0.12);
-        box-shadow: 0 14px 28px rgba(3, 8, 18, 0.24);
+        color: #a0a0a0;
     }
 
     body.dark-theme #hitokoto a {
-        color: inherit;
-        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.28);
+        color: #5d7fb9;
     }
 
     /* 中心内容样式 */
@@ -295,7 +280,7 @@ const HTML_CONTENT = `
         right: 10px;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
         z-index: 1001;
     }
 
@@ -304,8 +289,8 @@ const HTML_CONTENT = `
         background-color: #43b883;
         color: white;
         border: none;
-        border-radius: 14px;
-        padding: 8px 15px;
+        border-radius: 12px;
+        padding: 8px 14px;
         font-size: 13px;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -330,8 +315,8 @@ const HTML_CONTENT = `
         background-color: #43b883;
         color: white;
         border: none;
-        border-radius: 14px;
-        padding: 8px 15px;
+        border-radius: 12px;
+        padding: 8px 14px;
         font-size: 13px;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -360,9 +345,9 @@ const HTML_CONTENT = `
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 38px;
-        height: 38px;
-        border-radius: 14px;
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
         padding: 0;
     }
 
@@ -386,15 +371,15 @@ const HTML_CONTENT = `
         background-color: #43b883;
         color: white;
         border: none;
-        border-radius: 14px;
+        border-radius: 12px;
         padding: 0;
         cursor: pointer;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 38px;
-        height: 38px;
+        width: 36px;
+        height: 36px;
         position: relative;
     }
 
@@ -763,7 +748,7 @@ const HTML_CONTENT = `
 
     /* 主要内容区域样式 */
     .content {
-        margin-top: 158px;
+        margin-top: 162px;
         padding: 10px;
         max-width: 1600px;
         margin-left: auto;
@@ -824,19 +809,17 @@ const HTML_CONTENT = `
     .search-bar {
         display: flex;
         justify-content: center;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
         width: 100%;
         max-width: 600px;
         margin-left: auto;
         margin-right: auto;
-        border-radius: 18px;
+        border-radius: 14px;
         overflow: hidden;
-        background: rgba(255, 255, 255, 0.42);
-        box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.38);
-        backdrop-filter: blur(20px) saturate(145%);
-        -webkit-backdrop-filter: blur(20px) saturate(145%);
-        transition: background-color 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease;
+        background-color: #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
     }
 
     .search-bar:focus-within {
@@ -846,7 +829,7 @@ const HTML_CONTENT = `
 
     .search-bar select {
         border: none;
-        background-color: rgba(244, 247, 250, 0.5);
+        background-color: #f4f7fa;
         padding: 10px 15px;
         font-size: 14px;
         color: #43b883;
@@ -875,23 +858,23 @@ const HTML_CONTENT = `
 
     /* 暗色主题搜索栏样式 */
     body.dark-theme .search-bar {
-        border-color: rgba(120, 154, 214, 0.14);
-        background-color: rgba(14, 19, 29, 0.48);
+        border-color: #323642;
+        background-color: #1e2128;
     }
 
     body.dark-theme .search-bar select {
-        background-color: rgba(31, 37, 48, 0.82);
-        color: #93b1e9;
+        background-color: #252830;
+        color: #5d7fb9;
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="6" viewBox="0 0 12 6"><path fill="%235d7fb9" d="M0 0l6 6 6-6z"/></svg>');
     }
 
     body.dark-theme .search-bar input {
-        background-color: rgba(31, 37, 48, 0.82);
-        color: #e8edf5;
+        background-color: #252830;
+        color: #e3e3e3;
     }
 
     body.dark-theme .search-bar button {
-        background-color: #7da5ea;
+        background-color: #5d7fb9;
     }
 
     body.dark-theme select option {
@@ -928,13 +911,16 @@ const HTML_CONTENT = `
         display: flex;
         flex-wrap: wrap; /* 允许按钮换行显示 */
         justify-content: center; /* 居中排列按钮 */
-        gap: 8px;
-        padding: 0;
-        width: fit-content;
-        max-width: calc(100% - 24px);
+        gap: 6px;
+        padding: 6px 12px 0;
+        width: 100%;
+        max-width: 1200px;
         margin-left: auto;
         margin-right: auto;
-        margin-top: 2px;
+        margin-top: 4px;
+        background-color: transparent;
+        border-radius: 0;
+        box-shadow: none;
         transition: opacity 0.35s ease, transform 0.35s ease;
         position: relative; /* 确保在固定元素内正确定位 */
     }
@@ -1212,45 +1198,37 @@ const HTML_CONTENT = `
 
     .card-container {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(166px, 1fr));
-        column-gap: 10px;
-        row-gap: 10px;
+        grid-template-columns: repeat(auto-fit, 150px);
+        column-gap: 16px;
+        row-gap: 12px;
         justify-content: start;
-        padding: 10px 12px 6px 20px;
+        padding: 12px 12px 8px 22px;
         margin: 0 auto;
-        max-width: 1540px;
+        max-width: 1500px;
     }
 
     .card {
-        background-color: rgba(255, 255, 255, 0.66);
-        border-radius: 18px;
+        background-color: #fff;
+        border-radius: 14px;
         padding: 10px 12px;
-        width: auto;
-        min-height: 62px;
-        box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+        width: 150px;
+        min-height: 58px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
         cursor: pointer;
-        transition: transform 0.3s ease, box-shadow 0.35s ease, background-color 0.55s ease, border-color 0.55s ease;
+        transition: all 0.3s ease;
         position: relative;
         user-select: none;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        gap: 2px;
         border-left: 3px solid #43b883;
-        border: 1px solid rgba(255, 255, 255, 0.36);
-        backdrop-filter: blur(20px) saturate(145%);
-        -webkit-backdrop-filter: blur(20px) saturate(145%);
         animation: fadeIn 0.3s ease forwards;
         animation-delay: calc(var(--card-index) * 0.05s);
         opacity: 0;
-        margin: 2px;
+        margin: 0;
     }
 
     body.dark-theme .card {
-        background-color: rgba(14, 19, 29, 0.48);
-        border-left-color: #7ca4ea;
-        border-color: rgba(124, 164, 234, 0.14);
-        box-shadow: 0 14px 26px rgba(4, 10, 22, 0.22);
+        background-color: #1e2128;
+        border-left-color: #5d7fb9;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
     @keyframes fadeIn {
@@ -1259,8 +1237,8 @@ const HTML_CONTENT = `
     }
 
     .card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     }
 
     .card-top {
@@ -1293,7 +1271,6 @@ const HTML_CONTENT = `
         overflow: hidden;
         text-overflow: ellipsis;
         line-height: 1.2;
-        opacity: 0.92;
         transition: color 0.3s ease;
     }
 
@@ -1387,20 +1364,17 @@ const HTML_CONTENT = `
         align-items: center;
         gap: 6px;
         padding: 4px 10px;
-        background: rgba(255, 255, 255, 0.5);
-        border: 1px solid rgba(67, 184, 131, 0.18);
+        background: rgba(67, 184, 131, 0.1);
+        border: none;
         border-radius: 16px;
         cursor: pointer;
         transition: all 0.2s ease;
         font-size: 13px;
         margin-left: 12px;
         vertical-align: middle;
-        backdrop-filter: blur(14px) saturate(150%);
-        -webkit-backdrop-filter: blur(14px) saturate(150%);
-        box-shadow: 0 6px 18px rgba(67, 184, 131, 0.08);
     }
     .weather-mini:hover {
-        background: rgba(255, 255, 255, 0.68);
+        background: rgba(67, 184, 131, 0.2);
         transform: translateY(-1px);
     }
     .weather-mini .weather-icon { font-size: 16px; }
@@ -1409,12 +1383,10 @@ const HTML_CONTENT = `
     .weather-mini .weather-loading { color: #999; font-size: 12px; }
 
     body.dark-theme .weather-mini {
-        background: rgba(24, 29, 38, 0.52);
-        border-color: rgba(124, 164, 234, 0.2);
-        box-shadow: 0 12px 28px rgba(4, 10, 22, 0.24);
+        background: rgba(93, 127, 185, 0.15);
     }
     body.dark-theme .weather-mini:hover {
-        background: rgba(33, 39, 50, 0.72);
+        background: rgba(93, 127, 185, 0.25);
     }
     body.dark-theme .weather-mini .weather-temp { color: #e3e3e3; }
     body.dark-theme .weather-mini .weather-city { color: #aaa; }
@@ -1641,80 +1613,56 @@ const HTML_CONTENT = `
     @media (max-width: 480px) {
         .fixed-elements {
             position: fixed;
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) auto;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 12px;
+            padding: 8px 12px 6px 12px;
             height: auto;
-            min-height: 198px;
+            min-height: 140px;
             box-shadow: none;
-            backdrop-filter: blur(18px) saturate(135%);
-            -webkit-backdrop-filter: blur(18px) saturate(135%);
         }
 
         body.dark-theme .fixed-elements {
             box-shadow: none;
         }
 
-        .fixed-elements h3 {
-            position: static;
-            top: auto;
-            left: auto;
-            margin: 0;
-            justify-self: start;
-            font-size: 0;
-        }
-
         .weather-mini {
             margin-left: 0;
-            padding: 6px 12px;
-            border-radius: 18px;
-        }
-
-        .top-right-controls {
-            position: static;
-            top: auto;
-            right: auto;
-            justify-self: end;
-            gap: 8px;
+            padding: 4px 10px;
+            border-radius: 14px;
         }
 
         .login-btn,
         .admin-btn {
-            min-width: 72px;
-            height: 42px;
-            padding: 0 14px;
-            font-size: 13px;
+            padding: 7px 12px;
+            font-size: 12px;
+            border-radius: 12px;
         }
 
         .github-btn,
         .bookmark-search-toggle {
-            width: 42px;
-            height: 42px;
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
         }
 
         #hitokoto {
-            width: 100%;
-            max-width: none;
-            margin: 0;
-            padding: 9px 12px;
+            margin: 3px 0 6px 0;
             font-size: 12px;
-            line-height: 1.45;
-            border-radius: 14px;
+            line-height: 1.3;
+            padding: 0 8px;
         }
 
         .category-buttons-container {
             width: 100%;
             max-width: none;
-            padding: 2px 0 0;
+            padding: 6px;
             overflow-x: auto;
             flex-wrap: nowrap;
             justify-content: flex-start;
-            margin: 0;
+            margin: 8px auto 5px;
             scrollbar-width: none;
             -ms-overflow-style: none;
-            gap: 6px;
+            background-color: transparent;
+            border-radius: 0;
+            gap: 4px;
         }
 
         body.dark-theme .category-buttons-container {
@@ -1723,16 +1671,15 @@ const HTML_CONTENT = `
 
         .category-button {
             flex: 0 0 auto;
-            font-size: 12px;
-            padding: 7px 14px;
+            font-size: 11px;
+            padding: 5px 10px;
             white-space: nowrap;
-            margin: 0;
-            border-radius: 999px;
+            margin: 0 1px;
         }
 
         .content {
-            margin-top: 218px;
-            margin-bottom: 96px;
+            margin-top: 150px;
+            margin-bottom: 100px;
             padding: 12px;
             transition: opacity 0.3s ease;
         }
@@ -1742,11 +1689,7 @@ const HTML_CONTENT = `
             transform: none;
             width: 100%;
             text-align: center;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            grid-column: 1 / -1;
+            padding: 0 8px;
         }
 
         .loading .content {
@@ -1754,18 +1697,19 @@ const HTML_CONTENT = `
         }
 
         .search-container {
-            margin-top: 0;
+            margin-top: 15px;
         }
 
         .search-bar {
             flex-wrap: nowrap;
-            max-width: none;
-            width: 100%;
-            margin: 0;
+            max-width: 320px;
+            width: 90%;
+            margin: 6px auto 8px auto;
+            border-radius: 14px;
         }
 
         .search-bar select {
-            width: 88px;
+            width: 80px;
             flex: 0 0 auto;
             font-size: 12px;
         }
@@ -1777,7 +1721,7 @@ const HTML_CONTENT = `
 
         .search-bar button {
             flex: 0 0 auto;
-            padding: 0 16px;
+            padding: 0 14px;
         }
 
         .admin-controls input,
@@ -1789,10 +1733,10 @@ const HTML_CONTENT = `
 
         .card-container {
             display: grid;
-            grid-template-columns: minmax(0, 1fr);
-            column-gap: 0;
-            row-gap: 12px;
-            justify-content: stretch;
+            grid-template-columns: repeat(2, minmax(136px, 1fr));
+            column-gap: 12px;
+            row-gap: 10px;
+            justify-content: center;
             padding: 10px 6px 6px;
             margin: 0 auto;
         }
@@ -1800,14 +1744,14 @@ const HTML_CONTENT = `
         .card {
             width: auto;
             max-width: 100%;
-            min-height: 68px;
-            padding: 11px 12px;
+            min-height: 58px;
+            padding: 10px 11px;
             margin: 0;
-            border-radius: 18px;
+            border-radius: 14px;
         }
 
         .card-title {
-            font-size: 15px;
+            font-size: 13px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -1815,7 +1759,7 @@ const HTML_CONTENT = `
         }
 
         .card-url {
-            font-size: 12px;
+            font-size: 11px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
