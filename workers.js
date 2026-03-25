@@ -1224,7 +1224,8 @@ const HTML_CONTENT = `
         user-select: none;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: center;
+        gap: 5px;
         border-left: 3px solid #43b883;
         animation: fadeIn 0.3s ease forwards;
         animation-delay: calc(var(--card-index) * 0.05s);
@@ -1251,7 +1252,7 @@ const HTML_CONTENT = `
     .card-top {
         display: flex;
         align-items: center;
-        margin-bottom: 3px;
+        margin-bottom: 0;
     }
 
     .card-icon {
@@ -1275,11 +1276,14 @@ const HTML_CONTENT = `
         font-size: 12px;
         font-weight: 500;
         color: #888;
-        white-space: nowrap;
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
         overflow: hidden;
         text-overflow: ellipsis;
-        line-height: 1.15;
-        margin-top: auto;
+        line-height: 1.2;
+        margin-top: 0;
         transition: color 0.3s ease;
     }
 
@@ -1796,10 +1800,13 @@ const HTML_CONTENT = `
 
         .card-url {
             font-size: 12px;
-            white-space: nowrap;
+            white-space: normal;
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 100%;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
         }
 
         .add-remove-controls {
