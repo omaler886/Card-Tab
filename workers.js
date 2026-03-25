@@ -2349,6 +2349,7 @@ const HTML_CONTENT = `
     let mainAppBooted = false;
     let weatherAppBooted = false;
     let ambientBackgroundBooted = false;
+    let bootStatusPinned = false;
 
     // 日志记录函数
     function logAction(action, details) {
@@ -2363,6 +2364,7 @@ const HTML_CONTENT = `
         statusEl.textContent = message;
         statusEl.classList.toggle('error', !!isError);
         statusEl.style.display = 'block';
+        bootStatusPinned = !!isError;
     }
 
     function hideBootStatus() {
@@ -2370,6 +2372,7 @@ const HTML_CONTENT = `
         if (!statusEl) return;
         statusEl.style.display = 'none';
         statusEl.classList.remove('error');
+        bootStatusPinned = false;
     }
 
     async function fetchWithTimeout(resource, options, timeoutMs) {
@@ -2816,6 +2819,14 @@ const HTML_CONTENT = `
             const data = await response.json();
             console.log('Received data:', data);
 
+            if (data.warning === 'card_order_unbound') {
+                setBootStatus('未检测到 CARD_ORDER KV 绑定，当前先按空数据展示。请在 Cloudflare Worker 中重新绑定 CARD_ORDER。', true);
+            } else if (data.warning === 'card_order_get_timeout') {
+                setBootStatus('CARD_ORDER 读取超时，当前先按空数据展示。请检查 KV 服务状态或稍后重试。', true);
+            } else if (data.warning === 'card_order_invalid_json') {
+                setBootStatus('CARD_ORDER 中的数据格式不合法，当前先按空数据展示。', true);
+            }
+
             if (data.categories) {
                 Object.assign(categories, data.categories);
             }
@@ -2949,6 +2960,9 @@ const HTML_CONTENT = `
         renderCategoryButtons();
 
         if (!container.children.length) {
+            if (bootStatusPinned) {
+                return;
+            }
             if (links.length || Object.keys(categories).length) {
                 setBootStatus('当前分类下没有可显示的书签。可能是书签都被标记为私密，登录后才会显示。', false);
             } else {
@@ -5042,6 +5056,29 @@ async function validateAdminToken(authToken, env) {
 export default {
     async fetch(request, env) {
       const url = new URL(request.url);
+      const jsonHeaders = { 'Content-Type': 'application/json' };
+      const createJsonResponse = (payload, status = 200) =>
+        new Response(JSON.stringify(payload), { status, headers: jsonHeaders });
+      const createEmptyLinksPayload = (warning) => {
+        const payload = { links: [], categories: {} };
+        if (warning) {
+          payload.warning = warning;
+        }
+        return payload;
+      };
+      const withTimeout = async (promise, timeoutMs, errorMessage) => {
+        let timer = null;
+        try {
+          return await Promise.race([
+            promise,
+            new Promise((_, reject) => {
+              timer = setTimeout(() => reject(new Error(errorMessage || 'operation_timeout')), timeoutMs);
+            })
+          ]);
+        } finally {
+          if (timer) clearTimeout(timer);
+        }
+      };
 
       if (url.pathname === '/') {
         return new Response(HTML_CONTENT, {
@@ -5153,9 +5190,7 @@ export default {
 
       if (url.pathname === '/api/weather/edge') {
         if (!env.WEATHER_API_KEY) {
-          return new Response(JSON.stringify({ code: '503', error: 'weather_not_configured' }), {
-            status: 503, headers: { 'Content-Type': 'application/json' }
-          });
+          return createJsonResponse({ code: '503', error: 'weather_not_configured' }, 503);
         }
 
         const edgeTimezone = normalizeEdgeTimezone(request.cf && request.cf.timezone);
@@ -5174,7 +5209,7 @@ export default {
             error: 'edge_city_lookup_failed',
             timezone: edgeTimezone,
             source
-          }), { status: 502, headers: { 'Content-Type': 'application/json' } });
+          }), { status: 502, headers: jsonHeaders });
         }
 
         const location = geoData.location[0];
@@ -5198,30 +5233,26 @@ export default {
             error: 'edge_weather_lookup_failed',
             timezone: edgeTimezone,
             source
-          }), { status: 502, headers: { 'Content-Type': 'application/json' } });
+          }), { status: 502, headers: jsonHeaders });
         }
 
-        return new Response(JSON.stringify({
+        return createJsonResponse({
           code: '200',
           timezone: edgeTimezone,
           source,
           location,
           now: nowData.now,
           forecast: forecastData.daily
-        }), { headers: { 'Content-Type': 'application/json' } });
+        });
       }
 
       if (url.pathname === '/api/weather/now') {
         if (!env.WEATHER_API_KEY) {
-          return new Response(JSON.stringify({ code: '503', error: 'weather_not_configured' }), {
-            status: 503, headers: { 'Content-Type': 'application/json' }
-          });
+          return createJsonResponse({ code: '503', error: 'weather_not_configured' }, 503);
         }
         const location = url.searchParams.get('location');
         if (!location) {
-          return new Response(JSON.stringify({ code: '400', error: 'missing location' }), {
-            status: 400, headers: { 'Content-Type': 'application/json' }
-          });
+          return createJsonResponse({ code: '400', error: 'missing location' }, 400);
         }
         return await proxyQWeatherJson(
           `${qweatherApiBase}/v7/weather/now?location=${encodeURIComponent(location)}&key=${env.WEATHER_API_KEY}`
@@ -5230,15 +5261,11 @@ export default {
 
       if (url.pathname === '/api/weather/3d') {
         if (!env.WEATHER_API_KEY) {
-          return new Response(JSON.stringify({ code: '503', error: 'weather_not_configured' }), {
-            status: 503, headers: { 'Content-Type': 'application/json' }
-          });
+          return createJsonResponse({ code: '503', error: 'weather_not_configured' }, 503);
         }
         const location = url.searchParams.get('location');
         if (!location) {
-          return new Response(JSON.stringify({ code: '400', error: 'missing location' }), {
-            status: 400, headers: { 'Content-Type': 'application/json' }
-          });
+          return createJsonResponse({ code: '400', error: 'missing location' }, 400);
         }
         return await proxyQWeatherJson(
           `${qweatherApiBase}/v7/weather/3d?location=${encodeURIComponent(location)}&key=${env.WEATHER_API_KEY}`
@@ -5247,16 +5274,12 @@ export default {
 
       if (url.pathname === '/api/weather/geo') {
         if (!env.WEATHER_API_KEY) {
-          return new Response(JSON.stringify({ code: '503', error: 'weather_not_configured' }), {
-            status: 503, headers: { 'Content-Type': 'application/json' }
-          });
+          return createJsonResponse({ code: '503', error: 'weather_not_configured' }, 503);
         }
         const location = url.searchParams.get('location');
         const number = url.searchParams.get('number') || '8';
         if (!location) {
-          return new Response(JSON.stringify({ code: '400', error: 'missing location' }), {
-            status: 400, headers: { 'Content-Type': 'application/json' }
-          });
+          return createJsonResponse({ code: '400', error: 'missing location' }, 400);
         }
         return await proxyQWeatherJson(
           `${qweatherGeoBase}/v2/city/lookup?location=${encodeURIComponent(location)}&key=${env.WEATHER_API_KEY}&number=${number}`
@@ -5264,53 +5287,55 @@ export default {
       }
 
       if (url.pathname === '/api/getLinks') {
-        const userId = url.searchParams.get('userId');
+        const userId = url.searchParams.get('userId') || 'testUser';
         const authToken = request.headers.get('Authorization');
-        const data = await env.CARD_ORDER.get(userId);
+        if (!env.CARD_ORDER || typeof env.CARD_ORDER.get !== 'function') {
+          return createJsonResponse(createEmptyLinksPayload('card_order_unbound'));
+        }
+
+        let data = null;
+        try {
+          data = await withTimeout(env.CARD_ORDER.get(userId), 3500, 'card_order_get_timeout');
+        } catch (error) {
+          return createJsonResponse(createEmptyLinksPayload(error.message || 'card_order_get_failed'));
+        }
 
         if (data) {
-            const parsedData = JSON.parse(data);
+            let parsedData;
+            try {
+                parsedData = JSON.parse(data);
+            } catch (error) {
+                return createJsonResponse(createEmptyLinksPayload('card_order_invalid_json'));
+            }
 
             // 验证 token
             if (authToken) {
                 const validation = await validateServerToken(authToken, env);
                 if (!validation.isValid) {
-                    return new Response(JSON.stringify(validation.response), {
-                        status: validation.status,
-                        headers: { 'Content-Type': 'application/json' }
-                    });
+                    return createJsonResponse(validation.response, validation.status);
                 }
 
                 // Token 有效，返回完整数据
-                return new Response(JSON.stringify(parsedData), {
-                    status: 200,
-                    headers: { 'Content-Type': 'application/json' }
-                });
+                return createJsonResponse(parsedData);
             }
 
             // 未提供 token，只返回公开数据
-            const filteredLinks = parsedData.links.filter(link => !link.isPrivate);
+            const parsedLinks = Array.isArray(parsedData.links) ? parsedData.links : [];
+            const parsedCategories = parsedData.categories && typeof parsedData.categories === 'object' ? parsedData.categories : {};
+            const filteredLinks = parsedLinks.filter(link => !link.isPrivate);
             const filteredCategories = {};
-            Object.keys(parsedData.categories).forEach(category => {
-                filteredCategories[category] = parsedData.categories[category].filter(link => !link.isPrivate);
+            Object.keys(parsedCategories).forEach(category => {
+                const categoryLinks = Array.isArray(parsedCategories[category]) ? parsedCategories[category] : [];
+                filteredCategories[category] = categoryLinks.filter(link => !link.isPrivate);
             });
 
-            return new Response(JSON.stringify({
+            return createJsonResponse({
                 links: filteredLinks,
                 categories: filteredCategories
-            }), {
-                status: 200,
-                headers: { 'Content-Type': 'application/json' }
             });
         }
 
-        return new Response(JSON.stringify({
-            links: [],
-            categories: {}
-        }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' }
-        });
+        return createJsonResponse(createEmptyLinksPayload());
       }
 
       if (url.pathname === '/api/saveOrder' && request.method === 'POST') {
