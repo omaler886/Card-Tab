@@ -2344,6 +2344,7 @@ const HTML_CONTENT = `
         google: "https://www.google.com/search?q=",
         duckduckgo: "https://duckduckgo.com/?q="
     };
+    const INITIAL_LINKS_PAYLOAD = __INITIAL_LINKS_PAYLOAD__;
 
     let currentEngine = "baidu";
     let mainAppBooted = false;
@@ -2373,6 +2374,44 @@ const HTML_CONTENT = `
         statusEl.style.display = 'none';
         statusEl.classList.remove('error');
         bootStatusPinned = false;
+    }
+
+    function getLinksWarningMessage(warning) {
+        if (warning === 'card_order_unbound') {
+            return '未检测到 CARD_ORDER KV 绑定，当前先按空数据展示。请在 Cloudflare Worker 中重新绑定 CARD_ORDER。';
+        }
+        if (warning === 'card_order_get_timeout') {
+            return 'CARD_ORDER 读取超时，当前先按空数据展示。请检查 KV 服务状态或稍后重试。';
+        }
+        if (warning === 'card_order_invalid_json') {
+            return 'CARD_ORDER 中的数据格式不合法，当前先按空数据展示。';
+        }
+        return '';
+    }
+
+    function applyLinksPayload(data) {
+        const nextCategories = data && data.categories && typeof data.categories === 'object' ? data.categories : {};
+        const nextLinks = data && Array.isArray(data.links) ? data.links : [];
+
+        Object.keys(categories).forEach(function(key) {
+            delete categories[key];
+        });
+        Object.keys(nextCategories).forEach(function(key) {
+            categories[key] = Array.isArray(nextCategories[key]) ? nextCategories[key] : [];
+        });
+
+        publicLinks = nextLinks.filter(function(link) { return !link.isPrivate; });
+        privateLinks = nextLinks.filter(function(link) { return !!link.isPrivate; });
+        links = isLoggedIn ? publicLinks.concat(privateLinks) : publicLinks;
+
+        const warningMessage = getLinksWarningMessage(data && data.warning);
+        if (warningMessage) {
+            setBootStatus(warningMessage, true);
+        }
+
+        renderSections();
+        updateCategorySelect();
+        updateUIState();
     }
 
     async function fetchWithTimeout(resource, options, timeoutMs) {
@@ -2818,26 +2857,7 @@ const HTML_CONTENT = `
 
             const data = await response.json();
             console.log('Received data:', data);
-
-            if (data.warning === 'card_order_unbound') {
-                setBootStatus('未检测到 CARD_ORDER KV 绑定，当前先按空数据展示。请在 Cloudflare Worker 中重新绑定 CARD_ORDER。', true);
-            } else if (data.warning === 'card_order_get_timeout') {
-                setBootStatus('CARD_ORDER 读取超时，当前先按空数据展示。请检查 KV 服务状态或稍后重试。', true);
-            } else if (data.warning === 'card_order_invalid_json') {
-                setBootStatus('CARD_ORDER 中的数据格式不合法，当前先按空数据展示。', true);
-            }
-
-            if (data.categories) {
-                Object.assign(categories, data.categories);
-            }
-
-            publicLinks = data.links ? data.links.filter(link => !link.isPrivate) : [];
-            privateLinks = data.links ? data.links.filter(link => link.isPrivate) : [];
-            links = isLoggedIn ? [...publicLinks, ...privateLinks] : publicLinks;
-
-            renderSections();
-            updateCategorySelect();
-            updateUIState();
+            applyLinksPayload(data);
             logAction('读取链接', {
                 publicCount: publicLinks.length,
                 privateCount: privateLinks.length,
@@ -4356,9 +4376,15 @@ const HTML_CONTENT = `
         if (mainAppBooted) return;
         mainAppBooted = true;
         try {
-            await validateToken();
+            if (INITIAL_LINKS_PAYLOAD) {
+                applyLinksPayload(INITIAL_LINKS_PAYLOAD);
+            }
+
+            const tokenValid = await validateToken();
             updateLoginButton();
-            await loadLinks();
+            if (tokenValid) {
+                await loadLinks();
+            }
             // 初始加载完成后，检测当前可见分类
             setTimeout(setActiveCategoryButtonByVisibility, 500);
             // 初始化返回顶部按钮状态
@@ -5066,6 +5092,54 @@ export default {
         }
         return payload;
       };
+      const sanitizeForInlineScript = (value) =>
+        JSON.stringify(value).replace(/</g, '\\u003c').replace(/-->/g, '--\\>');
+      const normalizeCategories = (value) => {
+        const normalized = {};
+        if (!value || typeof value !== 'object') {
+          return normalized;
+        }
+        Object.keys(value).forEach((key) => {
+          normalized[key] = Array.isArray(value[key]) ? value[key] : [];
+        });
+        return normalized;
+      };
+      const buildPublicLinksPayload = (parsedData, warning) => {
+        const allLinks = Array.isArray(parsedData && parsedData.links) ? parsedData.links : [];
+        const allCategories = normalizeCategories(parsedData && parsedData.categories);
+        const filteredLinks = allLinks.filter((link) => !link.isPrivate);
+        const filteredCategories = {};
+        Object.keys(allCategories).forEach((category) => {
+          filteredCategories[category] = allCategories[category].filter((link) => !link.isPrivate);
+        });
+        const payload = { links: filteredLinks, categories: filteredCategories };
+        if (warning) {
+          payload.warning = warning;
+        }
+        return payload;
+      };
+      const loadInitialPublicLinksPayload = async (userId) => {
+        if (!env.CARD_ORDER || typeof env.CARD_ORDER.get !== 'function') {
+          return createEmptyLinksPayload('card_order_unbound');
+        }
+
+        let data = null;
+        try {
+          data = await withTimeout(env.CARD_ORDER.get(userId), 3500, 'card_order_get_timeout');
+        } catch (error) {
+          return createEmptyLinksPayload(error.message || 'card_order_get_timeout');
+        }
+
+        if (!data) {
+          return createEmptyLinksPayload();
+        }
+
+        try {
+          return buildPublicLinksPayload(JSON.parse(data));
+        } catch (error) {
+          return createEmptyLinksPayload('card_order_invalid_json');
+        }
+      };
       const withTimeout = async (promise, timeoutMs, errorMessage) => {
         let timer = null;
         try {
@@ -5081,7 +5155,9 @@ export default {
       };
 
       if (url.pathname === '/') {
-        return new Response(HTML_CONTENT, {
+        const initialLinksPayload = await loadInitialPublicLinksPayload('testUser');
+        const htmlContent = HTML_CONTENT.replace('__INITIAL_LINKS_PAYLOAD__', sanitizeForInlineScript(initialLinksPayload));
+        return new Response(htmlContent, {
           headers: { 'Content-Type': 'text/html' }
         });
       }
@@ -5320,19 +5396,7 @@ export default {
             }
 
             // 未提供 token，只返回公开数据
-            const parsedLinks = Array.isArray(parsedData.links) ? parsedData.links : [];
-            const parsedCategories = parsedData.categories && typeof parsedData.categories === 'object' ? parsedData.categories : {};
-            const filteredLinks = parsedLinks.filter(link => !link.isPrivate);
-            const filteredCategories = {};
-            Object.keys(parsedCategories).forEach(category => {
-                const categoryLinks = Array.isArray(parsedCategories[category]) ? parsedCategories[category] : [];
-                filteredCategories[category] = categoryLinks.filter(link => !link.isPrivate);
-            });
-
-            return createJsonResponse({
-                links: filteredLinks,
-                categories: filteredCategories
-            });
+            return createJsonResponse(buildPublicLinksPayload(parsedData));
         }
 
         return createJsonResponse(createEmptyLinksPayload());
