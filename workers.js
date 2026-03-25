@@ -1212,11 +1212,11 @@ const HTML_CONTENT = `
 
     .card-container {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(174px, 1fr));
-        column-gap: 12px;
-        row-gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(166px, 1fr));
+        column-gap: 10px;
+        row-gap: 10px;
         justify-content: start;
-        padding: 12px 14px 8px 22px;
+        padding: 10px 12px 6px 20px;
         margin: 0 auto;
         max-width: 1540px;
     }
@@ -1224,14 +1224,18 @@ const HTML_CONTENT = `
     .card {
         background-color: rgba(255, 255, 255, 0.66);
         border-radius: 18px;
-        padding: 12px 14px;
+        padding: 10px 12px;
         width: auto;
-        min-height: 74px;
+        min-height: 62px;
         box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
         cursor: pointer;
         transition: transform 0.3s ease, box-shadow 0.35s ease, background-color 0.55s ease, border-color 0.55s ease;
         position: relative;
         user-select: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 2px;
         border-left: 3px solid #43b883;
         border: 1px solid rgba(255, 255, 255, 0.36);
         backdrop-filter: blur(20px) saturate(145%);
@@ -1262,22 +1266,23 @@ const HTML_CONTENT = `
     .card-top {
         display: flex;
         align-items: center;
-        margin-bottom: 4px;
+        margin-bottom: 0;
     }
 
     .card-icon {
-        width: 16px;
-        height: 16px;
-        margin-right: 5px;
+        width: 14px;
+        height: 14px;
+        margin-right: 6px;
     }
 
     .card-title {
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 600;
         color: #222;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        line-height: 1.2;
         transition: color 0.3s ease;
     }
 
@@ -1287,6 +1292,8 @@ const HTML_CONTENT = `
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        line-height: 1.2;
+        opacity: 0.92;
         transition: color 0.3s ease;
     }
 
@@ -1793,14 +1800,14 @@ const HTML_CONTENT = `
         .card {
             width: auto;
             max-width: 100%;
-            min-height: 78px;
-            padding: 13px 14px;
+            min-height: 68px;
+            padding: 11px 12px;
             margin: 0;
             border-radius: 18px;
         }
 
         .card-title {
-            font-size: 17px;
+            font-size: 15px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -1808,7 +1815,7 @@ const HTML_CONTENT = `
         }
 
         .card-url {
-            font-size: 13px;
+            font-size: 12px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
