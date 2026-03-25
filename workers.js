@@ -1214,9 +1214,9 @@ const HTML_CONTENT = `
     .card {
         background-color: #fff;
         border-radius: 14px;
-        padding: 10px 12px;
+        padding: 8px 12px 7px;
         width: 150px;
-        min-height: 58px;
+        min-height: 0;
         box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
         cursor: pointer;
         transition: all 0.3s ease;
@@ -1248,7 +1248,7 @@ const HTML_CONTENT = `
     .card-top {
         display: flex;
         align-items: center;
-        margin-bottom: 0;
+        margin-bottom: 1px;
     }
 
     .card-icon {
@@ -1264,7 +1264,7 @@ const HTML_CONTENT = `
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        line-height: 1.2;
+        line-height: 1.15;
         transition: color 0.3s ease;
     }
 
@@ -1274,7 +1274,7 @@ const HTML_CONTENT = `
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        line-height: 1.2;
+        line-height: 1.1;
         transition: color 0.3s ease;
     }
 
@@ -1775,8 +1775,8 @@ const HTML_CONTENT = `
         .card {
             width: auto;
             max-width: 100%;
-            min-height: 58px;
-            padding: 10px 11px;
+            min-height: 0;
+            padding: 8px 11px 7px;
             margin: 0;
             border-radius: 14px;
         }
