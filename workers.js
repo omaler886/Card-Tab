@@ -1216,12 +1216,15 @@ const HTML_CONTENT = `
         border-radius: 14px;
         padding: 8px 12px 7px;
         width: 150px;
-        min-height: 0;
+        min-height: 72px;
         box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
         cursor: pointer;
         transition: all 0.3s ease;
         position: relative;
         user-select: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         border-left: 3px solid #43b883;
         animation: fadeIn 0.3s ease forwards;
         animation-delay: calc(var(--card-index) * 0.05s);
@@ -1775,7 +1778,7 @@ const HTML_CONTENT = `
         .card {
             width: auto;
             max-width: 100%;
-            min-height: 0;
+            min-height: 72px;
             padding: 8px 11px 7px;
             margin: 0;
             border-radius: 14px;
