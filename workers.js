@@ -45,12 +45,12 @@ const HTML_CONTENT = `
         transform: translate3d(0, 0, 0) scale(1.08);
         transform-origin: center;
         transition: opacity 1.45s ease, transform 26s ease;
-        filter: saturate(1.08) contrast(1.04) brightness(0.98);
+        filter: saturate(1.08) contrast(1.06) brightness(1.01);
         will-change: transform, opacity;
     }
 
     .background-image-layer.is-visible {
-        opacity: 0.66;
+        opacity: 0.84;
     }
 
     .theme-wash {
@@ -61,17 +61,17 @@ const HTML_CONTENT = `
 
     .theme-wash-light {
         background:
-            radial-gradient(circle at 18% 20%, rgba(236, 248, 242, 0.86), transparent 34%),
-            radial-gradient(circle at 82% 24%, rgba(255, 236, 208, 0.46), transparent 30%),
-            linear-gradient(180deg, rgba(248, 246, 242, 0.88), rgba(244, 240, 232, 0.8));
-        opacity: 1;
+            radial-gradient(circle at 18% 20%, rgba(241, 249, 246, 0.6), transparent 34%),
+            radial-gradient(circle at 82% 24%, rgba(255, 236, 208, 0.28), transparent 30%),
+            linear-gradient(180deg, rgba(248, 246, 242, 0.52), rgba(244, 240, 232, 0.44));
+        opacity: 0.88;
     }
 
     .theme-wash-dark {
         background:
-            radial-gradient(circle at 18% 22%, rgba(67, 184, 131, 0.14), transparent 30%),
+            radial-gradient(circle at 18% 22%, rgba(67, 184, 131, 0.12), transparent 30%),
             radial-gradient(circle at 82% 20%, rgba(93, 127, 185, 0.16), transparent 30%),
-            linear-gradient(180deg, rgba(13, 16, 22, 0.82), rgba(17, 20, 27, 0.92));
+            linear-gradient(180deg, rgba(10, 14, 20, 0.56), rgba(14, 18, 27, 0.74));
         opacity: 0;
     }
 
@@ -104,19 +104,19 @@ const HTML_CONTENT = `
     .ambient-orb.orb-c { background: rgba(255, 194, 102, 0.22); }
 
     body.dark-theme .background-image-layer {
-        filter: saturate(0.92) contrast(1.04) brightness(0.54);
+        filter: saturate(0.94) contrast(1.06) brightness(0.62);
     }
 
     body.dark-theme .background-image-layer.is-visible {
-        opacity: 0.42;
+        opacity: 0.62;
     }
 
     body.dark-theme .theme-wash-light {
-        opacity: 0.16;
+        opacity: 0.05;
     }
 
     body.dark-theme .theme-wash-dark {
-        opacity: 1;
+        opacity: 0.9;
     }
 
     body.dark-theme .ambient-grid {
@@ -145,19 +145,19 @@ const HTML_CONTENT = `
         top: 0;
         left: 0;
         right: 0;
-        background: rgba(248, 246, 242, 0.72);
+        background: rgba(248, 246, 242, 0.4);
         border-bottom: 1px solid rgba(67, 184, 131, 0.12);
         z-index: 1000;
         padding: 10px;
         transition: background-color 0.55s ease, border-color 0.55s ease, box-shadow 0.55s ease, backdrop-filter 0.55s ease;
         height: 150px;
-        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
-        backdrop-filter: blur(18px) saturate(140%);
-        -webkit-backdrop-filter: blur(18px) saturate(140%);
+        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+        backdrop-filter: blur(22px) saturate(145%);
+        -webkit-backdrop-filter: blur(22px) saturate(145%);
     }
 
     body.dark-theme .fixed-elements {
-        background: rgba(18, 23, 31, 0.58);
+        background: rgba(14, 18, 27, 0.44);
         border-bottom-color: rgba(120, 154, 214, 0.16);
         box-shadow: 0 14px 34px rgba(3, 8, 18, 0.34);
     }
@@ -231,20 +231,34 @@ const HTML_CONTENT = `
 
     /* 一言模块样式 */
     #hitokoto {
-        margin: 5px 0 15px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 2px auto 12px;
+        min-height: 34px;
+        padding: 7px 16px;
         font-size: 14px;
-        color: #888;
+        color: #5f6c74;
         font-style: italic;
-        max-width: 600px;
+        max-width: 720px;
         margin-left: auto;
         margin-right: auto;
-        transition: all 0.3s ease;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.34);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+        backdrop-filter: blur(14px) saturate(140%);
+        -webkit-backdrop-filter: blur(14px) saturate(140%);
+        transition: background-color 0.45s ease, color 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease;
     }
 
     #hitokoto a {
-        color: #43b883;
+        color: inherit;
         text-decoration: none;
-        transition: all 0.3s ease;
+        display: block;
+        max-width: 100%;
+        text-shadow: 0 1px 1px rgba(255, 255, 255, 0.22);
+        transition: color 0.3s ease;
     }
 
     #hitokoto a:hover {
@@ -252,11 +266,15 @@ const HTML_CONTENT = `
     }
 
     body.dark-theme #hitokoto {
-        color: #a0a0a0;
+        color: #c8d3dd;
+        background: rgba(12, 17, 26, 0.42);
+        border-color: rgba(124, 164, 234, 0.12);
+        box-shadow: 0 14px 28px rgba(3, 8, 18, 0.24);
     }
 
     body.dark-theme #hitokoto a {
-        color: #5d7fb9;
+        color: inherit;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.28);
     }
 
     /* 中心内容样式 */
@@ -814,8 +832,11 @@ const HTML_CONTENT = `
         margin-right: auto;
         border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        border: 1px solid #e0e0e0;
+        background: rgba(255, 255, 255, 0.42);
+        box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.38);
+        backdrop-filter: blur(20px) saturate(145%);
+        -webkit-backdrop-filter: blur(20px) saturate(145%);
         transition: background-color 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease;
     }
 
@@ -826,7 +847,7 @@ const HTML_CONTENT = `
 
     .search-bar select {
         border: none;
-        background-color: #f4f7fa;
+        background-color: rgba(244, 247, 250, 0.5);
         padding: 10px 15px;
         font-size: 14px;
         color: #43b883;
@@ -855,8 +876,8 @@ const HTML_CONTENT = `
 
     /* 暗色主题搜索栏样式 */
     body.dark-theme .search-bar {
-        border-color: rgba(120, 154, 214, 0.16);
-        background-color: rgba(25, 30, 40, 0.78);
+        border-color: rgba(120, 154, 214, 0.14);
+        background-color: rgba(14, 19, 29, 0.48);
     }
 
     body.dark-theme .search-bar select {
@@ -915,16 +936,18 @@ const HTML_CONTENT = `
         margin-left: auto;
         margin-right: auto;
         margin-top: 5px; /* 减少与搜索栏的距离 */
-        background-color: transparent; /* 背景透明 */
+        background-color: rgba(255, 255, 255, 0.16);
         border-radius: 8px;
-        box-shadow: none; /* 移除阴影 */
+        box-shadow: 0 12px 26px rgba(15, 23, 42, 0.04);
+        backdrop-filter: blur(10px) saturate(140%);
+        -webkit-backdrop-filter: blur(10px) saturate(140%);
         transition: opacity 0.35s ease, transform 0.35s ease;
         position: relative; /* 确保在固定元素内正确定位 */
     }
 
     body.dark-theme .category-buttons-container {
-        background-color: transparent; /* 暗色模式下的背景透明 */
-        box-shadow: none;
+        background-color: rgba(10, 14, 20, 0.2);
+        box-shadow: 0 12px 28px rgba(3, 8, 18, 0.12);
     }
 
     /* 滚动条美化 */
@@ -1195,27 +1218,31 @@ const HTML_CONTENT = `
 
     .card-container {
         display: grid;
-        grid-template-columns: repeat(auto-fit, 150px);
-        column-gap: 35px;
-        row-gap: 15px;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        column-gap: 16px;
+        row-gap: 16px;
         justify-content: start;
         padding: 15px;
-        padding-left: 45px;
+        padding-left: 28px;
         margin: 0 auto;
         max-width: 1600px;
     }
 
     .card {
-        background-color: white;
-        border-radius: 8px;
-        padding: 12px;
-        width: 150px;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+        background-color: rgba(255, 255, 255, 0.66);
+        border-radius: 12px;
+        padding: 14px;
+        width: auto;
+        min-height: 86px;
+        box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
         cursor: pointer;
         transition: transform 0.3s ease, box-shadow 0.35s ease, background-color 0.55s ease, border-color 0.55s ease;
         position: relative;
         user-select: none;
         border-left: 3px solid #43b883;
+        border: 1px solid rgba(255, 255, 255, 0.36);
+        backdrop-filter: blur(20px) saturate(145%);
+        -webkit-backdrop-filter: blur(20px) saturate(145%);
         animation: fadeIn 0.3s ease forwards;
         animation-delay: calc(var(--card-index) * 0.05s);
         opacity: 0;
@@ -1223,9 +1250,10 @@ const HTML_CONTENT = `
     }
 
     body.dark-theme .card {
-        background-color: rgba(27, 33, 43, 0.74);
+        background-color: rgba(14, 19, 29, 0.48);
         border-left-color: #7ca4ea;
-        box-shadow: 0 10px 28px rgba(4, 10, 22, 0.24);
+        border-color: rgba(124, 164, 234, 0.14);
+        box-shadow: 0 14px 30px rgba(4, 10, 22, 0.24);
     }
 
     @keyframes fadeIn {
@@ -1612,94 +1640,145 @@ const HTML_CONTENT = `
     /* 响应式设计 */
     @media (max-width: 480px) {
         .fixed-elements {
-            position: fixed; /* 恢复固定定位，确保分类按钮位置正确 */
-            padding: 8px 12px 5px 12px; /* 紧凑的内边距 */
+            position: fixed;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
             height: auto;
-            min-height: 140px; /* 增加最小高度，确保有足够空间 */
-            box-shadow: none; /* 移除阴影 */
+            min-height: 210px;
+            box-shadow: none;
+            backdrop-filter: blur(18px) saturate(135%);
+            -webkit-backdrop-filter: blur(18px) saturate(135%);
         }
 
         body.dark-theme .fixed-elements {
-            box-shadow: none; /* 移除阴影 */
+            box-shadow: none;
         }
 
-        /* 移动端一言样式调整 - 紧凑显示 */
+        .fixed-elements h3 {
+            position: static;
+            top: auto;
+            left: auto;
+            margin: 0;
+            justify-self: start;
+            font-size: 0;
+        }
+
+        .weather-mini {
+            margin-left: 0;
+            padding: 6px 12px;
+            border-radius: 18px;
+        }
+
+        .top-right-controls {
+            position: static;
+            top: auto;
+            right: auto;
+            justify-self: end;
+            gap: 8px;
+        }
+
+        .login-btn,
+        .admin-btn {
+            min-width: 72px;
+            height: 42px;
+            padding: 0 14px;
+            font-size: 13px;
+        }
+
+        .github-btn,
+        .bookmark-search-toggle {
+            width: 42px;
+            height: 42px;
+        }
+
         #hitokoto {
-            margin: 3px 0 6px 0; /* 紧凑的上下边距 */
-            font-size: 12px; /* 减小字体 */
-            line-height: 1.3; /* 紧凑行高 */
-            padding: 0 8px; /* 左右内边距 */
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: 9px 12px;
+            font-size: 12px;
+            line-height: 1.45;
+            border-radius: 14px;
         }
 
         .category-buttons-container {
             width: 100%;
             max-width: none;
-            padding: 6px;
-            overflow-x: auto; /* 允许水平滚动 */
-            flex-wrap: nowrap; /* 不允许按钮换行 */
-            justify-content: flex-start; /* 左对齐排列按钮 */
-            margin: 8px auto 5px; /* 紧凑的分类按钮边距 */
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE and Edge */
-            background-color: transparent; /* 移动端也透明 */
+            padding: 6px 4px 4px;
+            overflow-x: auto;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            margin: 0;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
             border-radius: 8px;
-            gap: 4px; /* 减小按钮间距 */
+            gap: 6px;
         }
 
         body.dark-theme .category-buttons-container {
-            background-color: transparent;
+            background-color: rgba(10, 14, 20, 0.24);
         }
 
         .category-button {
-            padding: 4px 8px;
-            font-size: 11px;
-            margin: 0 1px;
+            flex: 0 0 auto;
+            font-size: 12px;
+            padding: 7px 14px;
+            white-space: nowrap;
+            margin: 0;
+            border-radius: 999px;
         }
 
         .content {
-            margin-top: 150px; /* 增加顶部边距，适配更高的固定元素 */
-            margin-bottom: 100px; /* 为底部的分类按钮和版权信息留出空间 */
-            padding: 15px; /* 保持内边距 */
+            margin-top: 232px;
+            margin-bottom: 96px;
+            padding: 12px;
             transition: opacity 0.3s ease;
         }
 
-        /* 移动端center-content布局优化 */
         .center-content {
-            position: static; /* 移动端使用静态定位 */
-            transform: none; /* 取消变换 */
+            position: static;
+            transform: none;
             width: 100%;
             text-align: center;
-            padding: 0 8px; /* 减少左右内边距 */
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            grid-column: 1 / -1;
         }
 
         .loading .content {
             opacity: 0.6;
         }
 
-        /* 移动端搜索容器样式 */
         .search-container {
-            margin-top: 15px; /* 增加上边距，与右上角按钮拉开距离 */
+            margin-top: 0;
         }
 
         .search-bar {
             flex-wrap: nowrap;
-            max-width: 320px; /* 限制移动端搜索栏宽度 */
-            width: 90%; /* 相对宽度 */
-            margin: 6px auto 8px auto; /* 居中显示 */
+            max-width: none;
+            width: 100%;
+            margin: 0;
         }
 
         .search-bar select {
-            width: 80px; /* 缩小选择框宽度，参考佬友修改版 */
+            width: 88px;
             flex: 0 0 auto;
-            font-size: 12px; /* 减小字体以适应更小宽度 */
+            font-size: 12px;
         }
 
         .search-bar input {
             flex: 1;
+            min-width: 0;
         }
 
         .search-bar button {
             flex: 0 0 auto;
+            padding: 0 16px;
         }
 
         .admin-controls input,
@@ -1709,34 +1788,27 @@ const HTML_CONTENT = `
             font-size: 14px;
         }
 
-        .category-button {
-            flex: 0 0 auto;
-            font-size: 12px;
-            padding: 5px 12px;
-            white-space: nowrap;
-            margin: 0 3px; /* 水平间距 */
-        }
-
         .card-container {
             display: grid;
-            grid-template-columns: repeat(2, minmax(140px, 1fr));
-            column-gap: 20px;
-            row-gap: 10px;
-            justify-content: center;
-            padding: 12px;
+            grid-template-columns: minmax(0, 1fr);
+            column-gap: 0;
+            row-gap: 12px;
+            justify-content: stretch;
+            padding: 10px 6px 6px;
             margin: 0 auto;
         }
 
         .card {
             width: auto;
             max-width: 100%;
-            padding: 12px;
+            min-height: 82px;
+            padding: 14px;
             margin: 0;
-            border-radius: 8px;
+            border-radius: 14px;
         }
 
         .card-title {
-            font-size: 13px;
+            font-size: 17px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -1744,7 +1816,7 @@ const HTML_CONTENT = `
         }
 
         .card-url {
-            font-size: 11px;
+            font-size: 13px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -1790,6 +1862,13 @@ const HTML_CONTENT = `
         .section-title {
             font-size: 20px;
             min-width: 100px;
+        }
+
+        .boot-status {
+            margin: 10px 6px 18px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            font-size: 13px;
         }
     }
 
