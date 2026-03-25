@@ -700,6 +700,41 @@ const HTML_CONTENT = `
         opacity: 0.6;
     }
 
+    .boot-status {
+        margin: 16px auto 24px;
+        max-width: 880px;
+        padding: 16px 20px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.66);
+        border: 1px solid rgba(67, 184, 131, 0.12);
+        color: #5e6975;
+        font-size: 14px;
+        line-height: 1.7;
+        text-align: center;
+        box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+    }
+
+    .boot-status.error {
+        color: #9c3d3d;
+        border-color: rgba(211, 84, 84, 0.2);
+        background: rgba(255, 245, 245, 0.78);
+    }
+
+    body.dark-theme .boot-status {
+        background: rgba(30, 33, 40, 0.74);
+        border-color: rgba(93, 127, 185, 0.16);
+        color: #a7b3bf;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+    }
+
+    body.dark-theme .boot-status.error {
+        color: #f1b7b7;
+        border-color: rgba(214, 125, 125, 0.24);
+        background: rgba(60, 32, 35, 0.78);
+    }
+
     /* 搜索栏样式 */
     .search-container {
         margin-top: 10px;
@@ -2131,7 +2166,7 @@ const HTML_CONTENT = `
         <div class="ambient-orb orb-c"></div>
     </div>
     <div class="fixed-elements">
-        <h3><span class="weather-mini" id="weather-mini" onclick="openWeatherModal()"><span class="weather-loading">加载中...</span></span></h3>
+        <h3><span class="weather-mini" id="weather-mini" onclick="openWeatherModal()"><span class="weather-loading">天气</span></span></h3>
         <div class="center-content">
             <!-- 一言模块 -->
             <p id="hitokoto">
@@ -2211,6 +2246,7 @@ const HTML_CONTENT = `
 
 
         <!-- 分类和卡片容器 -->
+        <div id="boot-status" class="boot-status">页面正在加载书签数据。如果这里长时间不变化，通常是书签接口或 KV 绑定没有返回数据。</div>
         <div id="sections-container"></div>
         <!-- 浮动按钮组 -->
         <div class="floating-button-group">
@@ -2317,6 +2353,30 @@ const HTML_CONTENT = `
         const logEntry = timestamp + ': ' + action + ' - ' + JSON.stringify(details);
         console.log(logEntry);
     }
+
+    function setBootStatus(message, isError) {
+        const statusEl = document.getElementById('boot-status');
+        if (!statusEl) return;
+        statusEl.textContent = message;
+        statusEl.classList.toggle('error', !!isError);
+        statusEl.style.display = 'block';
+    }
+
+    function hideBootStatus() {
+        const statusEl = document.getElementById('boot-status');
+        if (!statusEl) return;
+        statusEl.style.display = 'none';
+        statusEl.classList.remove('error');
+    }
+
+    window.addEventListener('error', function(event) {
+        setBootStatus('前端脚本执行失败：' + event.message + '。请检查 Worker 控制台日志。', true);
+    });
+
+    window.addEventListener('unhandledrejection', function(event) {
+        const reason = event.reason && event.reason.message ? event.reason.message : String(event.reason || '未知错误');
+        setBootStatus('页面初始化失败：' + reason, true);
+    });
 
     function getRandomNumber(min, max) {
         return Math.random() * (max - min) + min;
@@ -2711,6 +2771,7 @@ const HTML_CONTENT = `
 
     // 读取链接数据
     async function loadLinks() {
+        setBootStatus('正在读取书签数据...', false);
         const headers = {
             'Content-Type': 'application/json'
         };
@@ -2757,6 +2818,7 @@ const HTML_CONTENT = `
             // 🔧 安全修复：避免泄露详细错误信息
             console.error('Failed to load links');
             console.error('加载链接时出错，请刷新页面重试');
+            setBootStatus('书签数据读取失败。请检查 `CARD_ORDER` KV 绑定、接口返回状态，或确认当前用户下已有数据。', true);
         }
     }
 
@@ -2863,6 +2925,16 @@ const HTML_CONTENT = `
 
         // 渲染分类快捷按钮
         renderCategoryButtons();
+
+        if (!container.children.length) {
+            if (links.length || Object.keys(categories).length) {
+                setBootStatus('当前分类下没有可显示的书签。可能是书签都被标记为私密，登录后才会显示。', false);
+            } else {
+                setBootStatus('当前没有书签数据。你可以先进入设置添加书签，或者检查 KV 中是否已有数据。', false);
+            }
+        } else {
+            hideBootStatus();
+        }
 
         logAction('渲染分类和链接', { isAdmin: isAdmin, linkCount: links.length, categoryCount: Object.keys(categories).length });
     }
@@ -4256,6 +4328,7 @@ const HTML_CONTENT = `
         } catch (error) {
             // 🔧 安全修复：避免泄露详细错误信息
             console.error('Initialization failed');
+            setBootStatus('页面初始化失败，请检查浏览器控制台或 Worker 日志。', true);
         }
     });
 
