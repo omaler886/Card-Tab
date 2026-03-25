@@ -1214,9 +1214,9 @@ const HTML_CONTENT = `
     .card {
         background-color: #fff;
         border-radius: 14px;
-        padding: 8px 12px 7px;
+        padding: 7px 12px 6px;
         width: 150px;
-        min-height: 66px;
+        min-height: 64px;
         box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
         cursor: pointer;
         transition: all 0.3s ease;
@@ -1225,7 +1225,7 @@ const HTML_CONTENT = `
         display: flex;
         flex-direction: column;
         justify-content: center;
-        gap: 4px;
+        gap: 3px;
         border-left: 3px solid #43b883;
         animation: fadeIn 0.3s ease forwards;
         animation-delay: calc(var(--card-index) * 0.05s);
@@ -1784,8 +1784,8 @@ const HTML_CONTENT = `
         .card {
             width: auto;
             max-width: 100%;
-            min-height: 66px;
-            padding: 8px 11px 7px;
+            min-height: 64px;
+            padding: 7px 11px 6px;
             margin: 0;
             border-radius: 14px;
         }
