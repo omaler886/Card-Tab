@@ -2346,6 +2346,9 @@ const HTML_CONTENT = `
     };
 
     let currentEngine = "baidu";
+    let mainAppBooted = false;
+    let weatherAppBooted = false;
+    let ambientBackgroundBooted = false;
 
     // 日志记录函数
     function logAction(action, details) {
@@ -2367,6 +2370,20 @@ const HTML_CONTENT = `
         if (!statusEl) return;
         statusEl.style.display = 'none';
         statusEl.classList.remove('error');
+    }
+
+    async function fetchWithTimeout(resource, options, timeoutMs) {
+        const controller = new AbortController();
+        const timer = setTimeout(function() {
+            controller.abort();
+        }, timeoutMs || 8000);
+
+        try {
+            const finalOptions = Object.assign({}, options || {}, { signal: controller.signal });
+            return await fetch(resource, finalOptions);
+        } finally {
+            clearTimeout(timer);
+        }
     }
 
     window.addEventListener('error', function(event) {
@@ -2403,6 +2420,8 @@ const HTML_CONTENT = `
     }
 
     function initAmbientBackground() {
+        if (ambientBackgroundBooted) return;
+        ambientBackgroundBooted = true;
         animateAmbientBackground();
         setInterval(animateAmbientBackground, 12000);
     }
@@ -2785,9 +2804,9 @@ const HTML_CONTENT = `
         }
 
         try {
-            const response = await fetch('/api/getLinks?userId=testUser', {
+            const response = await fetchWithTimeout('/api/getLinks?userId=testUser', {
                 headers: headers
-            });
+            }, 8000);
 
             if (!response.ok) {
                 throw new Error("HTTP error! status: " + response.status);
@@ -2818,7 +2837,10 @@ const HTML_CONTENT = `
             // 🔧 安全修复：避免泄露详细错误信息
             console.error('Failed to load links');
             console.error('加载链接时出错，请刷新页面重试');
-            setBootStatus('书签数据读取失败。请检查 CARD_ORDER KV 绑定、接口返回状态，或确认当前用户下已有数据。', true);
+            const message = error && error.name === 'AbortError'
+                ? '书签接口请求超时。请检查 Worker 是否已绑定 CARD_ORDER KV，或接口是否被其他请求卡住。'
+                : '书签数据读取失败。请检查 CARD_ORDER KV 绑定、接口返回状态，或确认当前用户下已有数据。';
+            setBootStatus(message, true);
         }
     }
 
@@ -4316,7 +4338,9 @@ const HTML_CONTENT = `
 
 
     // 初始化加载
-    document.addEventListener('DOMContentLoaded', async () => {
+    async function bootMainApp() {
+        if (mainAppBooted) return;
+        mainAppBooted = true;
         try {
             await validateToken();
             updateLoginButton();
@@ -4330,7 +4354,7 @@ const HTML_CONTENT = `
             console.error('Initialization failed');
             setBootStatus('页面初始化失败，请检查浏览器控制台或 Worker 日志。', true);
         }
-    });
+    }
 
     // 添加滚动事件监听器
     window.addEventListener('scroll', handleBackToTopVisibility);
@@ -4346,9 +4370,9 @@ const HTML_CONTENT = `
         }
 
         try {
-            const response = await fetch('/api/getLinks?userId=testUser', {
+            const response = await fetchWithTimeout('/api/getLinks?userId=testUser', {
                 headers: { 'Authorization': token }
-            });
+            }, 8000);
 
             if (response.status === 401) {
                 await resetToLoginState('token已过期，请重新登录');
@@ -4722,7 +4746,7 @@ const HTML_CONTENT = `
     async function loadWeatherByEdgeTimezone() {
         try {
             document.getElementById('weather-mini').innerHTML = '<span class="weather-loading">定位中...</span>';
-            const edgeRes = await fetch(WEATHER_API + '/edge');
+            const edgeRes = await fetchWithTimeout(WEATHER_API + '/edge', {}, 8000);
             if (edgeRes.status === 503) {
                 weatherNotConfigured = true;
                 renderWeatherNotConfigured('--');
@@ -4849,8 +4873,9 @@ const HTML_CONTENT = `
         if (e.target.id === 'weather-modal') closeWeatherModal();
     }
 
-    // 页面加载时初始化天气
-    document.addEventListener('DOMContentLoaded', function() {
+    function bootWeatherApp() {
+        if (weatherAppBooted) return;
+        weatherAppBooted = true;
         initAmbientBackground();
         setTimeout(function() {
             console.log('开始初始化天气组件...');
@@ -4859,7 +4884,21 @@ const HTML_CONTENT = `
                 document.getElementById('weather-mini').innerHTML = '<span class="weather-loading">加载失败</span>';
             });
         }, 500); // 延迟加载，优先加载主内容
-    });
+    }
+
+    function bootApplication() {
+        bootMainApp();
+        bootWeatherApp();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bootApplication, { once: true });
+    } else {
+        bootApplication();
+    }
+
+    // 兜底：即使 DOMContentLoaded 没按预期触发，也强制启动一次
+    setTimeout(bootApplication, 1200);
 
     </script>
 
