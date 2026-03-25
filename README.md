@@ -1,82 +1,101 @@
-# Card-Tab 书签卡片式管理，进入管理模式可以自由移动书签位置，添加和删除书签，支持自定义网站分类，支持切换暗色主题
+# Card-Tab
 
-📋 **查看完整更新历史**: [CHANGELOG.md](./CHANGELOG.md)
+Cloudflare Worker 版卡片式书签导航，支持公开/私密书签、分类管理、拖拽排序、自动主题、边缘时区天气和随机背景图。
 
-### [当前版本] - 2026.03.25
-## ✨ 核心功能
+完整更新历史见 [CHANGELOG.md](./CHANGELOG.md)。
+自定义配置说明见 [README.CUSTOM.md](./README.CUSTOM.md)。
 
-### 🎨 界面设计
-- **现代化视觉**：采用 Segoe UI 字体系统，米白色/深色双主题
-- **卡片式布局**：美观的书签卡片，支持左侧装饰条和悬停效果
-- **响应式设计**：完美适配桌面端和移动端设备
-- **自动主题**：支持自动 / 浅色 / 深色三态切换，自动模式会结合系统偏好和昼夜时间切换黑白界面
-- **高斯模糊**：顶部栏与天气弹窗采用毛玻璃效果，界面层次更柔和
-- **动态背景**：背景会持续随机漂移滚动，保持页面有轻微动态感
+## 当前状态
 
-### 🔍 搜索功能
-- **多引擎搜索**：支持百度、必应、谷歌、DuckDuckGo
-- **书签搜索**：快速搜索已保存的书签名称和网址
-- **分类导航**：快捷按钮一键跳转到指定分类
-- **智能高亮**：自动高亮当前可见分类
+- 首屏书签由 Worker 直接注入，页面不再依赖前端先请求 `/api/getLinks` 才能显示
+- 主题支持 `自动 / 浅色 / 深色` 三态
+- 天气使用 Cloudflare 边缘节点时区映射城市，并通过 Open-Meteo 获取实时天气和 3 日预报
+- 背景支持随机图片轮播；未配置自定义图片时，默认使用内置 SVG 背景组
+- 背景图片可通过 Cloudflare Worker 的“变量与机密”自定义
 
-### 📚 书签管理
-- **分类管理**：自定义分类，支持重命名和排序
-- **卡片编辑**：修改名称、网址、描述和自定义图标
-- **私密书签**：登录后可见的私密书签功能
-- **拖拽排序**：直观的拖拽操作调整书签顺序
+## 功能概览
 
-### 🔐 安全特性
-- **JWT验证**：基于Token的身份验证机制
-- **自定义有效期**：支持15分钟至永久的登录时长选择
-- **自动备份**：KV存储保留最近10次数据备份
-- **权限控制**：公开/私密书签分级管理
+### 界面
 
-### 📱 用户体验
-- **自定义图标**：支持图片URL链接，个性化书签外观
-- **悬停提示**：鼠标悬停显示书签详细描述
-- **返回顶部**：便捷的页面导航功能
-- **加载动画**：流畅的交互反馈和视觉效果
-- **实时天气**：根据访问请求所在 Cloudflare 边缘节点时区映射代表城市，显示当前天气和3天天气预报，并附带更新时间提示
+- 卡片式书签布局，支持桌面和移动端
+- 毛玻璃顶部栏、天气胶囊、天气弹窗
+- 黑白主题自动切换，并优化了暗色过渡
+- 随机背景图片 + 动态光晕 + 网格背景
 
-### 注意：如果你已经部署过第一版（20240902）导航，更新workes代码后将无法看到之前保存的书签，需重新添加书签，望知悉！
+### 书签管理
 
-#### 2024.09.02 发布 （第一版很轻便，代码保留在history下）
+- 分类新增、重命名、移动、删除
+- 卡片新增、编辑、删除
+- 公开/私密书签分离展示
+- 拖拽排序并写回 KV
 
-#### 演示站点：  https://demo.usgk.dpdns.org   备用网址：https://demo.linuxdo.nyc.mn   密码：admin
+### 搜索
 
-#### 20250429 更新界面：
-![1745910265848](https://github.com/user-attachments/assets/bce632fc-d61c-4efe-a74e-e416cab085b8)
+- 百度、必应、谷歌、DuckDuckGo
+- 页面内书签搜索
+- 分类快捷跳转和当前分类高亮
 
-#### 未登录界面
-![image](https://github.com/user-attachments/assets/dd0cad75-11ce-4691-804f-b4dff5ae2cde)
+### 安全
 
-#### 已登录界面（黑暗主题）
-![image](https://github.com/user-attachments/assets/c18f0df4-8e00-45e6-84db-30f81b545d15)
+- 基于 `ADMIN_PASSWORD` 的登录验证
+- `TOKEN_EXPIRY_MINUTES` 控制登录有效期
+- KV 自动备份最近 10 份数据
 
-#### 设置界面
-![image](https://github.com/user-attachments/assets/dc91458a-840c-41f9-9e50-261471320f81)
+## 部署
 
+### 1. 创建 Worker
 
+在 Cloudflare Workers 中创建一个 Worker，把 [workers.js](./workers.js) 的内容部署上去。
 
-# 部署方法：
-#### 五步即可完成部署：
-#### 1. 登录 Cloudflare：  https://www.cloudflare.com  创建workers，复制 workers.js 的代码，然后部署
-![image](https://github.com/user-attachments/assets/c067105b-91ee-43d5-90a9-806e5de5fe16)
+### 2. 创建并绑定 KV
 
-#### 2. 新建一个名为CARD_ORDER的KV存储
-![image](https://github.com/user-attachments/assets/706a7735-b47a-4f66-bdb4-827c38be692b)
+创建名为 `CARD_ORDER` 的 KV Namespace，并绑定到 Worker。
 
-#### 3. 添加环境变量，用于设置后台管理密码。变量名为ADMIN_PASSWORD，值your_password换成你自己的密码
-![image](https://github.com/user-attachments/assets/532dcb8f-dc30-4ca9-aac9-21ef546bf367)
+绑定名必须是：
 
-#### 4. 可选：配置天气系统环境变量
-- `WEATHER_API_KEY`：和风天气控制台申请的 API Key
-- `WEATHER_API_HOST`：和风天气控制台里的 API Host，推荐一并配置
+- `CARD_ORDER`
 
-#### 5. 将workers的CARD_ORDER变量与新建的KV存储绑定，用于存储书签
-![image](https://github.com/user-attachments/assets/9b166809-5b1e-451e-be99-253f6e60be54)
+### 3. 配置变量与机密
 
-#### 6. 添加域名
-![image](https://github.com/user-attachments/assets/4f23eab6-e94c-49b1-9198-3c8e05dffa8a)
+至少添加下面这些配置：
 
-## 此项目适合轻量使用，各位随意自行魔改，喜欢的话点一下小星星就行，谢谢！
+| 名称 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `ADMIN_PASSWORD` | Secret | 是 | 后台管理密码，建议放机密 |
+| `TOKEN_EXPIRY_MINUTES` | Variable | 否 | 登录有效期，默认 `30` |
+| `BACKGROUND_IMAGE_URLS` | Variable / Secret | 否 | 自定义随机背景图列表，支持 JSON 数组或换行/逗号分隔 |
+
+说明：
+
+- `BACKGROUND_IMAGE_URLS` 不配也能用，页面会自动退回到内置背景图
+- 如果你使用带签名参数的私有图片地址，可以把 `BACKGROUND_IMAGE_URLS` 放到 Secret
+- 天气现在默认走 Open-Meteo，不需要额外天气 Key
+
+### 4. 连接 Git 自动部署
+
+如果你是通过 GitHub 仓库自动部署 Worker，确保 Cloudflare 跟踪的是你要发布的分支，通常是：
+
+- `main`
+
+### 5. 打开站点初始化
+
+首次部署后，用配置的 `ADMIN_PASSWORD` 登录，再添加或导入书签数据。
+
+## 数据兼容说明
+
+- 旧版 2024.09.02 的轻量版代码仍保留在 [history](./history)
+- 如果你从非常早期版本直接升级，旧数据结构可能不兼容，需要重新导入或整理数据
+
+## 自定义配置
+
+详细自定义项、背景图示例和变量写法见：
+
+- [README.CUSTOM.md](./README.CUSTOM.md)
+
+## 备注
+
+- 天气接口来源：Open-Meteo
+- 访问定位来源：Cloudflare `request.cf.timezone`
+- 书签图标默认走 `faviconextractor`
+
+适合轻量自托管和自行魔改。

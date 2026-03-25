@@ -4,7 +4,7 @@ const HTML_CONTENT = `
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="card-tab-build" content="20260325-inline-fix-2">
+    <meta name="card-tab-build" content="20260325-open-meteo-bg-theme">
     <title>Card Tab</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>⭐</text></svg>">
     <style>
@@ -15,20 +15,64 @@ const HTML_CONTENT = `
         padding: 0;
         position: relative;
         overflow-x: hidden;
-        background-color: #f8f6f2; /* 米白色背景 */
-        background-image: radial-gradient(circle at top, rgba(67, 184, 131, 0.08), transparent 38%), radial-gradient(circle at bottom right, rgba(93, 127, 185, 0.08), transparent 30%);
-        background-attachment: fixed;
+        background-color: #f3efe6;
         color: #222; /* 深灰字体 */
-        transition: all 0.3s ease;
+        transition: background-color 0.72s ease, color 0.36s ease;
         min-height: 100vh;
     }
 
     .ambient-background {
         position: fixed;
-        inset: -18vh -14vw;
+        inset: 0;
         pointer-events: none;
         z-index: 0;
         overflow: hidden;
+    }
+
+    .background-image-stage {
+        position: absolute;
+        inset: -6vh -4vw;
+        overflow: hidden;
+    }
+
+    .background-image-layer {
+        position: absolute;
+        inset: -4%;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0;
+        transform: translate3d(0, 0, 0) scale(1.08);
+        transform-origin: center;
+        transition: opacity 1.45s ease, transform 26s ease;
+        filter: saturate(1.08) contrast(1.04) brightness(0.98);
+        will-change: transform, opacity;
+    }
+
+    .background-image-layer.is-visible {
+        opacity: 0.66;
+    }
+
+    .theme-wash {
+        position: absolute;
+        inset: 0;
+        transition: opacity 0.72s ease;
+    }
+
+    .theme-wash-light {
+        background:
+            radial-gradient(circle at 18% 20%, rgba(236, 248, 242, 0.86), transparent 34%),
+            radial-gradient(circle at 82% 24%, rgba(255, 236, 208, 0.46), transparent 30%),
+            linear-gradient(180deg, rgba(248, 246, 242, 0.88), rgba(244, 240, 232, 0.8));
+        opacity: 1;
+    }
+
+    .theme-wash-dark {
+        background:
+            radial-gradient(circle at 18% 22%, rgba(67, 184, 131, 0.14), transparent 30%),
+            radial-gradient(circle at 82% 20%, rgba(93, 127, 185, 0.16), transparent 30%),
+            linear-gradient(180deg, rgba(13, 16, 22, 0.82), rgba(17, 20, 27, 0.92));
+        opacity: 0;
     }
 
     .ambient-grid {
@@ -59,13 +103,29 @@ const HTML_CONTENT = `
     .ambient-orb.orb-b { background: rgba(93, 127, 185, 0.28); }
     .ambient-orb.orb-c { background: rgba(255, 194, 102, 0.22); }
 
-    body.dark-theme .ambient-grid {
+    body.dark-theme .background-image-layer {
+        filter: saturate(0.92) contrast(1.04) brightness(0.54);
+    }
+
+    body.dark-theme .background-image-layer.is-visible {
+        opacity: 0.42;
+    }
+
+    body.dark-theme .theme-wash-light {
         opacity: 0.16;
+    }
+
+    body.dark-theme .theme-wash-dark {
+        opacity: 1;
+    }
+
+    body.dark-theme .ambient-grid {
+        opacity: 0.14;
         background-image: linear-gradient(rgba(93, 127, 185, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(67, 184, 131, 0.06) 1px, transparent 1px);
     }
 
     body.dark-theme .ambient-orb {
-        opacity: 0.28;
+        opacity: 0.22;
     }
 
     @keyframes ambientGridPan {
@@ -75,9 +135,8 @@ const HTML_CONTENT = `
 
     /* 暗色模式样式 */
     body.dark-theme {
-        background-color: #121418; /* 更深的背景色 */
-        background-image: radial-gradient(circle at top, rgba(93, 127, 185, 0.16), transparent 40%), radial-gradient(circle at bottom right, rgba(67, 184, 131, 0.1), transparent 32%);
-        color: #e3e3e3;
+        background-color: #141920;
+        color: #e6ebf2;
     }
 
     /* 固定元素样式 */
@@ -90,7 +149,7 @@ const HTML_CONTENT = `
         border-bottom: 1px solid rgba(67, 184, 131, 0.12);
         z-index: 1000;
         padding: 10px;
-        transition: all 0.3s ease;
+        transition: background-color 0.55s ease, border-color 0.55s ease, box-shadow 0.55s ease, backdrop-filter 0.55s ease;
         height: 150px;
         box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
         backdrop-filter: blur(18px) saturate(140%);
@@ -98,9 +157,9 @@ const HTML_CONTENT = `
     }
 
     body.dark-theme .fixed-elements {
-        background: rgba(18, 20, 24, 0.76);
-        border-bottom-color: rgba(93, 127, 185, 0.18);
-        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+        background: rgba(18, 23, 31, 0.58);
+        border-bottom-color: rgba(120, 154, 214, 0.16);
+        box-shadow: 0 14px 34px rgba(3, 8, 18, 0.34);
     }
 
     /* 分类快捷按钮容器样式移至搜索栏内 */
@@ -124,9 +183,9 @@ const HTML_CONTENT = `
     }
 
     body.dark-theme .category-button {
-        background-color: #2a2e38;
-        color: #5d7fb9;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        background-color: rgba(37, 44, 56, 0.76);
+        color: #93b1e9;
+        box-shadow: 0 6px 16px rgba(4, 10, 22, 0.2);
     }
 
     .category-button:hover {
@@ -757,7 +816,7 @@ const HTML_CONTENT = `
         overflow: hidden;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         border: 1px solid #e0e0e0;
-        transition: all 0.3s ease;
+        transition: background-color 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease;
     }
 
     .search-bar:focus-within {
@@ -796,23 +855,23 @@ const HTML_CONTENT = `
 
     /* 暗色主题搜索栏样式 */
     body.dark-theme .search-bar {
-        border-color: #323642;
-        background-color: #1e2128;
+        border-color: rgba(120, 154, 214, 0.16);
+        background-color: rgba(25, 30, 40, 0.78);
     }
 
     body.dark-theme .search-bar select {
-        background-color: #252830;
-        color: #5d7fb9;
+        background-color: rgba(31, 37, 48, 0.82);
+        color: #93b1e9;
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="6" viewBox="0 0 12 6"><path fill="%235d7fb9" d="M0 0l6 6 6-6z"/></svg>');
     }
 
     body.dark-theme .search-bar input {
-        background-color: #252830;
-        color: #e3e3e3;
+        background-color: rgba(31, 37, 48, 0.82);
+        color: #e8edf5;
     }
 
     body.dark-theme .search-bar button {
-        background-color: #5d7fb9;
+        background-color: #7da5ea;
     }
 
     body.dark-theme select option {
@@ -859,7 +918,7 @@ const HTML_CONTENT = `
         background-color: transparent; /* 背景透明 */
         border-radius: 8px;
         box-shadow: none; /* 移除阴影 */
-        transition: all 0.3s ease;
+        transition: opacity 0.35s ease, transform 0.35s ease;
         position: relative; /* 确保在固定元素内正确定位 */
     }
 
@@ -1082,7 +1141,7 @@ const HTML_CONTENT = `
     }
 
     body.dark-theme .section-title-container {
-        border-bottom-color: #2a2e38;
+        border-bottom-color: rgba(120, 154, 214, 0.12);
     }
 
     .section-title {
@@ -1153,7 +1212,7 @@ const HTML_CONTENT = `
         width: 150px;
         box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: transform 0.3s ease, box-shadow 0.35s ease, background-color 0.55s ease, border-color 0.55s ease;
         position: relative;
         user-select: none;
         border-left: 3px solid #43b883;
@@ -1164,9 +1223,9 @@ const HTML_CONTENT = `
     }
 
     body.dark-theme .card {
-        background-color: #1e2128; /* 卡片背景 */
-        border-left-color: #5d7fb9;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        background-color: rgba(27, 33, 43, 0.74);
+        border-left-color: #7ca4ea;
+        box-shadow: 0 10px 28px rgba(4, 10, 22, 0.24);
     }
 
     @keyframes fadeIn {
@@ -1322,12 +1381,12 @@ const HTML_CONTENT = `
     .weather-mini .weather-loading { color: #999; font-size: 12px; }
 
     body.dark-theme .weather-mini {
-        background: rgba(30, 33, 40, 0.54);
-        border-color: rgba(93, 127, 185, 0.22);
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+        background: rgba(24, 29, 38, 0.52);
+        border-color: rgba(124, 164, 234, 0.2);
+        box-shadow: 0 12px 28px rgba(4, 10, 22, 0.24);
     }
     body.dark-theme .weather-mini:hover {
-        background: rgba(40, 44, 54, 0.72);
+        background: rgba(33, 39, 50, 0.72);
     }
     body.dark-theme .weather-mini .weather-temp { color: #e3e3e3; }
     body.dark-theme .weather-mini .weather-city { color: #aaa; }
@@ -1531,8 +1590,8 @@ const HTML_CONTENT = `
 
     /* 天气弹窗暗色主题 */
     body.dark-theme .weather-modal-content {
-        background: rgba(30, 33, 40, 0.78);
-        border-color: rgba(93, 127, 185, 0.18);
+        background: rgba(24, 29, 38, 0.74);
+        border-color: rgba(124, 164, 234, 0.16);
     }
     body.dark-theme .weather-modal-header { border-bottom-color: #333; }
     body.dark-theme .weather-modal-title { color: #e3e3e3; }
@@ -2161,6 +2220,12 @@ const HTML_CONTENT = `
 
 <body>
     <div class="ambient-background" aria-hidden="true">
+        <div class="background-image-stage">
+            <div class="background-image-layer" id="background-image-layer-a"></div>
+            <div class="background-image-layer" id="background-image-layer-b"></div>
+        </div>
+        <div class="theme-wash theme-wash-light"></div>
+        <div class="theme-wash theme-wash-dark"></div>
         <div class="ambient-grid"></div>
         <div class="ambient-orb orb-a"></div>
         <div class="ambient-orb orb-b"></div>
@@ -2346,12 +2411,18 @@ const HTML_CONTENT = `
         duckduckgo: "https://duckduckgo.com/?q="
     };
     const INITIAL_LINKS_PAYLOAD = __INITIAL_LINKS_PAYLOAD__;
+    const BACKGROUND_IMAGE_URLS = __BACKGROUND_IMAGE_URLS__;
 
     let currentEngine = "baidu";
     let mainAppBooted = false;
     let weatherAppBooted = false;
     let ambientBackgroundBooted = false;
     let bootStatusPinned = false;
+    let backgroundImageLayers = [];
+    let currentBackgroundLayerIndex = 0;
+    let currentBackgroundImageIndex = -1;
+    let backgroundImageTimer = null;
+    let backgroundImageSwapInFlight = false;
 
     // 日志记录函数
     function logAction(action, details) {
@@ -2442,6 +2513,93 @@ const HTML_CONTENT = `
         return Math.random() * (max - min) + min;
     }
 
+    function getBackgroundImageList() {
+        if (!Array.isArray(BACKGROUND_IMAGE_URLS)) return [];
+        return BACKGROUND_IMAGE_URLS
+            .filter(function(url) { return typeof url === 'string' && url.trim() !== ''; })
+            .map(function(url) { return url.trim(); });
+    }
+
+    function preloadBackgroundImage(url) {
+        return new Promise(function(resolve, reject) {
+            const image = new Image();
+            image.onload = function() { resolve(url); };
+            image.onerror = function() { reject(new Error('background_image_load_failed')); };
+            image.referrerPolicy = 'no-referrer';
+            image.src = url;
+        });
+    }
+
+    function pickNextBackgroundImageUrl(urls) {
+        if (!urls.length) return null;
+        let nextIndex = Math.floor(Math.random() * urls.length);
+        if (urls.length > 1 && nextIndex === currentBackgroundImageIndex) {
+            nextIndex = (nextIndex + 1 + Math.floor(Math.random() * (urls.length - 1))) % urls.length;
+        }
+        currentBackgroundImageIndex = nextIndex;
+        return urls[nextIndex];
+    }
+
+    async function rotateBackgroundImage() {
+        const urls = getBackgroundImageList();
+        if (!urls.length || backgroundImageLayers.length < 2 || backgroundImageSwapInFlight) return;
+
+        const nextUrl = pickNextBackgroundImageUrl(urls);
+        if (!nextUrl) return;
+
+        const nextLayer = backgroundImageLayers[currentBackgroundLayerIndex];
+        const previousLayer = backgroundImageLayers[(currentBackgroundLayerIndex + 1) % backgroundImageLayers.length];
+        backgroundImageSwapInFlight = true;
+
+        try {
+            await preloadBackgroundImage(nextUrl);
+        } catch (error) {
+            console.warn('背景图片加载失败:', error);
+            backgroundImageSwapInFlight = false;
+            return;
+        }
+
+        const shiftX = getRandomNumber(-4.2, 4.2).toFixed(2) + 'vw';
+        const shiftY = getRandomNumber(-3.6, 3.6).toFixed(2) + 'vh';
+        const scale = getRandomNumber(1.1, 1.18).toFixed(3);
+        const focusX = getRandomNumber(38, 62).toFixed(2) + '%';
+        const focusY = getRandomNumber(34, 60).toFixed(2) + '%';
+
+        nextLayer.style.backgroundImage = 'url(' + JSON.stringify(nextUrl) + ')';
+        nextLayer.style.backgroundPosition = focusX + ' ' + focusY;
+        nextLayer.style.transform = 'translate3d(' + shiftX + ', ' + shiftY + ', 0) scale(' + scale + ')';
+
+        requestAnimationFrame(function() {
+            nextLayer.classList.add('is-visible');
+            previousLayer.classList.remove('is-visible');
+        });
+
+        setTimeout(function() {
+            previousLayer.style.backgroundImage = '';
+        }, 1800);
+
+        currentBackgroundLayerIndex = (currentBackgroundLayerIndex + 1) % backgroundImageLayers.length;
+        backgroundImageSwapInFlight = false;
+    }
+
+    function initBackgroundImageStage() {
+        if (backgroundImageTimer) return;
+
+        backgroundImageLayers = [
+            document.getElementById('background-image-layer-a'),
+            document.getElementById('background-image-layer-b')
+        ].filter(Boolean);
+
+        if (backgroundImageLayers.length < 2 || !getBackgroundImageList().length) {
+            return;
+        }
+
+        rotateBackgroundImage();
+        backgroundImageTimer = setInterval(function() {
+            rotateBackgroundImage();
+        }, 46000);
+    }
+
     function animateAmbientBackground() {
         const palette = [
             ['rgba(67, 184, 131, 0.34)', 'rgba(139, 214, 171, 0.18)'],
@@ -2465,6 +2623,7 @@ const HTML_CONTENT = `
     function initAmbientBackground() {
         if (ambientBackgroundBooted) return;
         ambientBackgroundBooted = true;
+        initBackgroundImageStage();
         animateAmbientBackground();
         setInterval(animateAmbientBackground, 12000);
     }
@@ -5127,6 +5286,92 @@ export default {
         }
         return payload;
       };
+      const parseStringList = (value) => {
+        const raw = String(value || '').trim();
+        if (!raw) {
+          return [];
+        }
+        try {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            return parsed.map((item) => String(item || '').trim()).filter(Boolean);
+          }
+        } catch (error) {
+        }
+        return raw.split(/\r?\n|,/).map((item) => item.trim()).filter(Boolean);
+      };
+      const createDefaultBackgroundImages = () => {
+        const presets = [
+          {
+            skyTop: '#f7f0e3',
+            skyBottom: '#d8ecf0',
+            glowA: '#ffd8b2',
+            glowB: '#b6ead4',
+            ridgeA: '#d6c1ad',
+            ridgeB: '#8eb7a7',
+            ridgeC: '#688b7b'
+          },
+          {
+            skyTop: '#eef3fb',
+            skyBottom: '#f8ead8',
+            glowA: '#f2c0b3',
+            glowB: '#bdd5ff',
+            ridgeA: '#dfd0bc',
+            ridgeB: '#91a7c7',
+            ridgeC: '#667b9e'
+          },
+          {
+            skyTop: '#f3efe8',
+            skyBottom: '#e2efe4',
+            glowA: '#ffd2ac',
+            glowB: '#bae4d8',
+            ridgeA: '#d8c5b2',
+            ridgeB: '#96b9af',
+            ridgeC: '#56796d'
+          },
+          {
+            skyTop: '#f6efe5',
+            skyBottom: '#e3e7f4',
+            glowA: '#ffc2b2',
+            glowB: '#b7caf3',
+            ridgeA: '#d8c8bf',
+            ridgeB: '#9caecb',
+            ridgeC: '#6f7e9d'
+          }
+        ];
+
+        return presets.map((preset) => {
+          const svg = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="${preset.skyTop}" />
+                  <stop offset="100%" stop-color="${preset.skyBottom}" />
+                </linearGradient>
+                <radialGradient id="glowA" cx="20%" cy="20%" r="45%">
+                  <stop offset="0%" stop-color="${preset.glowA}" stop-opacity="0.9" />
+                  <stop offset="100%" stop-color="${preset.glowA}" stop-opacity="0" />
+                </radialGradient>
+                <radialGradient id="glowB" cx="82%" cy="24%" r="42%">
+                  <stop offset="0%" stop-color="${preset.glowB}" stop-opacity="0.78" />
+                  <stop offset="100%" stop-color="${preset.glowB}" stop-opacity="0" />
+                </radialGradient>
+              </defs>
+              <rect width="1600" height="900" fill="url(#sky)" />
+              <rect width="1600" height="900" fill="url(#glowA)" />
+              <rect width="1600" height="900" fill="url(#glowB)" />
+              <path fill="${preset.ridgeA}" fill-opacity="0.58" d="M0 592C132 552 247 538 377 556C505 574 624 640 764 646C912 652 1012 563 1156 546C1310 528 1446 564 1600 621V900H0Z"/>
+              <path fill="${preset.ridgeB}" fill-opacity="0.64" d="M0 672C145 617 274 606 430 628C572 648 686 714 835 721C991 728 1120 650 1262 636C1390 623 1492 646 1600 696V900H0Z"/>
+              <path fill="${preset.ridgeC}" fill-opacity="0.78" d="M0 752C117 709 247 704 371 723C510 744 646 807 795 810C939 814 1062 759 1211 748C1353 739 1470 763 1600 810V900H0Z"/>
+            </svg>
+          `;
+          return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+        });
+      };
+      const getConfiguredBackgroundImages = (env) => {
+        const configured = parseStringList(env.BACKGROUND_IMAGE_URLS);
+        return configured.length ? configured : createDefaultBackgroundImages();
+      };
       const loadInitialPublicLinksPayload = async (userId) => {
         if (!env.CARD_ORDER || typeof env.CARD_ORDER.get !== 'function') {
           return createEmptyLinksPayload('card_order_unbound');
@@ -5165,7 +5410,10 @@ export default {
 
       if (url.pathname === '/') {
         const initialLinksPayload = await loadInitialPublicLinksPayload('testUser');
-        const htmlContent = HTML_CONTENT.replace('__INITIAL_LINKS_PAYLOAD__', sanitizeForInlineScript(initialLinksPayload));
+        const backgroundImageUrls = getConfiguredBackgroundImages(env);
+        const htmlContent = HTML_CONTENT
+          .replace('__INITIAL_LINKS_PAYLOAD__', sanitizeForInlineScript(initialLinksPayload))
+          .replace('__BACKGROUND_IMAGE_URLS__', sanitizeForInlineScript(backgroundImageUrls));
         return new Response(htmlContent, {
           headers: { 'Content-Type': 'text/html' }
         });
