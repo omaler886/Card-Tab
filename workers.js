@@ -145,19 +145,21 @@ const HTML_CONTENT = `
         top: 0;
         left: 0;
         right: 0;
-        background-color: #f8f6f2;
-        border-bottom: 1px solid rgba(67, 184, 131, 0.12);
+        background: linear-gradient(180deg, rgba(248, 246, 242, 0.82) 0%, rgba(248, 246, 242, 0.72) 62%, rgba(248, 246, 242, 0.24) 100%);
+        border-bottom: 1px solid rgba(67, 184, 131, 0.08);
         z-index: 1000;
-        padding: 9px 10px 8px;
-        transition: all 0.3s ease;
-        height: 144px;
-        box-shadow: none;
+        padding: 7px 10px 4px;
+        transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, backdrop-filter 0.35s ease;
+        height: 132px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+        backdrop-filter: blur(24px) saturate(150%);
+        -webkit-backdrop-filter: blur(24px) saturate(150%);
     }
 
     body.dark-theme .fixed-elements {
-        background-color: #121418;
-        border-bottom-color: rgba(93, 127, 185, 0.18);
-        box-shadow: none;
+        background: linear-gradient(180deg, rgba(13, 17, 24, 0.8) 0%, rgba(13, 17, 24, 0.68) 58%, rgba(13, 17, 24, 0.24) 100%);
+        border-bottom-color: rgba(93, 127, 185, 0.12);
+        box-shadow: 0 14px 36px rgba(3, 8, 18, 0.18);
     }
 
     /* 分类快捷按钮容器样式移至搜索栏内 */
@@ -229,10 +231,10 @@ const HTML_CONTENT = `
     /* 一言模块样式 */
     #hitokoto {
         display: block;
-        margin: 4px auto 10px;
+        margin: 2px auto 6px;
         min-height: 0;
         padding: 0;
-        font-size: 13px;
+        font-size: 12px;
         color: #888;
         font-style: italic;
         max-width: 600px;
@@ -748,7 +750,7 @@ const HTML_CONTENT = `
 
     /* 主要内容区域样式 */
     .content {
-        margin-top: 162px;
+        margin-top: 146px;
         padding: 10px;
         max-width: 1600px;
         margin-left: auto;
@@ -799,7 +801,7 @@ const HTML_CONTENT = `
 
     /* 搜索栏样式 */
     .search-container {
-        margin-top: 10px;
+        margin-top: 6px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -809,16 +811,18 @@ const HTML_CONTENT = `
     .search-bar {
         display: flex;
         justify-content: center;
-        margin-bottom: 10px;
+        margin-bottom: 7px;
         width: 100%;
         max-width: 600px;
         margin-left: auto;
         margin-right: auto;
         border-radius: 14px;
         overflow: hidden;
-        background-color: #fff;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        border: 1px solid #e0e0e0;
+        background-color: rgba(255, 255, 255, 0.7);
+        box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.36);
+        backdrop-filter: blur(18px) saturate(140%);
+        -webkit-backdrop-filter: blur(18px) saturate(140%);
         transition: all 0.3s ease;
     }
 
@@ -858,18 +862,18 @@ const HTML_CONTENT = `
 
     /* 暗色主题搜索栏样式 */
     body.dark-theme .search-bar {
-        border-color: #323642;
-        background-color: #1e2128;
+        border-color: rgba(120, 154, 214, 0.14);
+        background-color: rgba(30, 33, 40, 0.64);
     }
 
     body.dark-theme .search-bar select {
-        background-color: #252830;
+        background-color: rgba(37, 40, 48, 0.82);
         color: #5d7fb9;
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="6" viewBox="0 0 12 6"><path fill="%235d7fb9" d="M0 0l6 6 6-6z"/></svg>');
     }
 
     body.dark-theme .search-bar input {
-        background-color: #252830;
+        background-color: rgba(37, 40, 48, 0.82);
         color: #e3e3e3;
     }
 
@@ -912,12 +916,12 @@ const HTML_CONTENT = `
         flex-wrap: wrap; /* 允许按钮换行显示 */
         justify-content: center; /* 居中排列按钮 */
         gap: 6px;
-        padding: 6px 12px 0;
+        padding: 2px 12px 0;
         width: 100%;
         max-width: 1200px;
         margin-left: auto;
         margin-right: auto;
-        margin-top: 4px;
+        margin-top: 0;
         background-color: transparent;
         border-radius: 0;
         box-shadow: none;
