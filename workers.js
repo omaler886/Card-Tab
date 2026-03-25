@@ -4671,36 +4671,44 @@ const HTML_CONTENT = `
         '310': '🌧️', '311': '🌧️', '312': '🌧️', '313': '🌧️',
         '400': '🌨️', '401': '🌨️', '402': '🌨️', '403': '🌨️', '404': '🌨️',
         '500': '🌫️', '501': '🌫️', '502': '🌫️', '503': '🌫️', '504': '🌫️',
+        '0d': '☀️', '0n': '🌙', '1d': '🌤️', '1n': '🌙', '2d': '⛅', '2n': '☁️',
+        '3': '☁️', '45': '🌫️', '48': '🌫️',
+        '51': '🌦️', '53': '🌦️', '55': '🌧️', '56': '🌨️', '57': '🌨️',
+        '61': '🌧️', '63': '🌧️', '65': '🌧️', '66': '🌨️', '67': '🌨️',
+        '71': '🌨️', '73': '🌨️', '75': '❄️', '77': '🌨️',
+        '80': '🌦️', '81': '🌧️', '82': '⛈️',
+        '85': '🌨️', '86': '❄️',
+        '95': '⛈️', '96': '⛈️', '99': '⛈️',
         '999': '❓'
     };
     const WEEKDAYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
     const EDGE_TIMEZONE_CITY_MAP = {
-        'Asia/Shanghai': { query: '上海', label: '上海' },
-        'Asia/Hong_Kong': { query: '香港', label: '香港' },
-        'Asia/Tokyo': { query: '东京', label: '东京' },
-        'Asia/Seoul': { query: '首尔', label: '首尔' },
-        'Asia/Singapore': { query: '新加坡', label: '新加坡' },
-        'Asia/Bangkok': { query: '曼谷', label: '曼谷' },
-        'Asia/Kuala_Lumpur': { query: '吉隆坡', label: '吉隆坡' },
-        'Asia/Jakarta': { query: '雅加达', label: '雅加达' },
-        'Asia/Kolkata': { query: '孟买', label: '孟买' },
-        'Asia/Dubai': { query: '迪拜', label: '迪拜' },
-        'Europe/London': { query: '伦敦', label: '伦敦' },
-        'Europe/Paris': { query: '巴黎', label: '巴黎' },
-        'Europe/Berlin': { query: '柏林', label: '柏林' },
-        'Europe/Madrid': { query: '马德里', label: '马德里' },
-        'Europe/Moscow': { query: '莫斯科', label: '莫斯科' },
-        'America/New_York': { query: '纽约', label: '纽约' },
-        'America/Chicago': { query: '芝加哥', label: '芝加哥' },
-        'America/Denver': { query: '丹佛', label: '丹佛' },
-        'America/Los_Angeles': { query: '洛杉矶', label: '洛杉矶' },
-        'America/Phoenix': { query: '菲尼克斯', label: '菲尼克斯' },
-        'America/Toronto': { query: '多伦多', label: '多伦多' },
-        'America/Sao_Paulo': { query: '圣保罗', label: '圣保罗' },
-        'Australia/Sydney': { query: '悉尼', label: '悉尼' },
-        'Australia/Melbourne': { query: '墨尔本', label: '墨尔本' },
-        'Pacific/Auckland': { query: '奥克兰', label: '奥克兰' },
-        'Africa/Johannesburg': { query: '约翰内斯堡', label: '约翰内斯堡' },
+        'Asia/Shanghai': { query: 'Shanghai', label: '上海' },
+        'Asia/Hong_Kong': { query: 'Hong Kong', label: '香港' },
+        'Asia/Tokyo': { query: 'Tokyo', label: '东京' },
+        'Asia/Seoul': { query: 'Seoul', label: '首尔' },
+        'Asia/Singapore': { query: 'Singapore', label: '新加坡' },
+        'Asia/Bangkok': { query: 'Bangkok', label: '曼谷' },
+        'Asia/Kuala_Lumpur': { query: 'Kuala Lumpur', label: '吉隆坡' },
+        'Asia/Jakarta': { query: 'Jakarta', label: '雅加达' },
+        'Asia/Kolkata': { query: 'Mumbai', label: '孟买' },
+        'Asia/Dubai': { query: 'Dubai', label: '迪拜' },
+        'Europe/London': { query: 'London', label: '伦敦' },
+        'Europe/Paris': { query: 'Paris', label: '巴黎' },
+        'Europe/Berlin': { query: 'Berlin', label: '柏林' },
+        'Europe/Madrid': { query: 'Madrid', label: '马德里' },
+        'Europe/Moscow': { query: 'Moscow', label: '莫斯科' },
+        'America/New_York': { query: 'New York', label: '纽约' },
+        'America/Chicago': { query: 'Chicago', label: '芝加哥' },
+        'America/Denver': { query: 'Denver', label: '丹佛' },
+        'America/Los_Angeles': { query: 'Los Angeles', label: '洛杉矶' },
+        'America/Phoenix': { query: 'Phoenix', label: '菲尼克斯' },
+        'America/Toronto': { query: 'Toronto', label: '多伦多' },
+        'America/Sao_Paulo': { query: 'Sao Paulo', label: '圣保罗' },
+        'Australia/Sydney': { query: 'Sydney', label: '悉尼' },
+        'Australia/Melbourne': { query: 'Melbourne', label: '墨尔本' },
+        'Pacific/Auckland': { query: 'Auckland', label: '奥克兰' },
+        'Africa/Johannesburg': { query: 'Johannesburg', label: '约翰内斯堡' },
         'Etc/UTC': { query: 'London', label: 'UTC' }
     };
 
@@ -4851,7 +4859,7 @@ const HTML_CONTENT = `
             '<span class="weather-temp">--°</span>';
         // 弹窗内容
         document.getElementById('weather-current').innerHTML =
-            '<div class="weather-not-configured">未配置天气 Api Key</div>';
+            '<div class="weather-not-configured">天气服务暂不可用</div>';
     }
 
     // 渲染迷你天气
@@ -5163,48 +5171,67 @@ export default {
         });
       }
 
-      // ========== 天气代理 API ==========
-      const normalizeBaseUrl = (raw) => {
-        const value = (raw || '').trim();
-        if (!value) return null;
-        const withScheme = /^https?:\/\//i.test(value) ? value : `https://${value}`;
-        return withScheme.replace(/\/+$/, '');
-      };
-
-      // 公告说明：公共 API 域名将逐步停服，建议改用你的 API Host（形如：xxx.yyy.qweatherapi.com）
-      // - devapi.qweather.com 已于 2026-01-01 停止服务
-      // - GeoAPI 使用 API Host 时需从 /v2/... 变更为 /geo/v2/...
-      const qweatherHost = normalizeBaseUrl(env.WEATHER_API_HOST);
-      const qweatherApiBase = qweatherHost || 'https://api.qweather.com';
-      const qweatherGeoBase = qweatherHost ? `${qweatherApiBase}/geo` : 'https://geoapi.qweather.com';
+      // ========== 天气代理 API（Open-Meteo） ==========
+      const openMeteoForecastBase = 'https://api.open-meteo.com/v1/forecast';
+      const openMeteoGeocodeBase = 'https://geocoding-api.open-meteo.com/v1/search';
       const edgeTimezoneCityMap = {
-        'Asia/Shanghai': { query: '上海', label: '上海' },
-        'Asia/Hong_Kong': { query: '香港', label: '香港' },
-        'Asia/Tokyo': { query: '东京', label: '东京' },
-        'Asia/Seoul': { query: '首尔', label: '首尔' },
-        'Asia/Singapore': { query: '新加坡', label: '新加坡' },
-        'Asia/Bangkok': { query: '曼谷', label: '曼谷' },
-        'Asia/Kuala_Lumpur': { query: '吉隆坡', label: '吉隆坡' },
-        'Asia/Jakarta': { query: '雅加达', label: '雅加达' },
-        'Asia/Kolkata': { query: '孟买', label: '孟买' },
-        'Asia/Dubai': { query: '迪拜', label: '迪拜' },
-        'Europe/London': { query: '伦敦', label: '伦敦' },
-        'Europe/Paris': { query: '巴黎', label: '巴黎' },
-        'Europe/Berlin': { query: '柏林', label: '柏林' },
-        'Europe/Madrid': { query: '马德里', label: '马德里' },
-        'Europe/Moscow': { query: '莫斯科', label: '莫斯科' },
-        'America/New_York': { query: '纽约', label: '纽约' },
-        'America/Chicago': { query: '芝加哥', label: '芝加哥' },
-        'America/Denver': { query: '丹佛', label: '丹佛' },
-        'America/Los_Angeles': { query: '洛杉矶', label: '洛杉矶' },
-        'America/Phoenix': { query: '菲尼克斯', label: '菲尼克斯' },
-        'America/Toronto': { query: '多伦多', label: '多伦多' },
-        'America/Sao_Paulo': { query: '圣保罗', label: '圣保罗' },
-        'Australia/Sydney': { query: '悉尼', label: '悉尼' },
-        'Australia/Melbourne': { query: '墨尔本', label: '墨尔本' },
-        'Pacific/Auckland': { query: '奥克兰', label: '奥克兰' },
-        'Africa/Johannesburg': { query: '约翰内斯堡', label: '约翰内斯堡' },
+        'Asia/Shanghai': { query: 'Shanghai', label: '上海' },
+        'Asia/Hong_Kong': { query: 'Hong Kong', label: '香港' },
+        'Asia/Tokyo': { query: 'Tokyo', label: '东京' },
+        'Asia/Seoul': { query: 'Seoul', label: '首尔' },
+        'Asia/Singapore': { query: 'Singapore', label: '新加坡' },
+        'Asia/Bangkok': { query: 'Bangkok', label: '曼谷' },
+        'Asia/Kuala_Lumpur': { query: 'Kuala Lumpur', label: '吉隆坡' },
+        'Asia/Jakarta': { query: 'Jakarta', label: '雅加达' },
+        'Asia/Kolkata': { query: 'Mumbai', label: '孟买' },
+        'Asia/Dubai': { query: 'Dubai', label: '迪拜' },
+        'Europe/London': { query: 'London', label: '伦敦' },
+        'Europe/Paris': { query: 'Paris', label: '巴黎' },
+        'Europe/Berlin': { query: 'Berlin', label: '柏林' },
+        'Europe/Madrid': { query: 'Madrid', label: '马德里' },
+        'Europe/Moscow': { query: 'Moscow', label: '莫斯科' },
+        'America/New_York': { query: 'New York', label: '纽约' },
+        'America/Chicago': { query: 'Chicago', label: '芝加哥' },
+        'America/Denver': { query: 'Denver', label: '丹佛' },
+        'America/Los_Angeles': { query: 'Los Angeles', label: '洛杉矶' },
+        'America/Phoenix': { query: 'Phoenix', label: '菲尼克斯' },
+        'America/Toronto': { query: 'Toronto', label: '多伦多' },
+        'America/Sao_Paulo': { query: 'Sao Paulo', label: '圣保罗' },
+        'Australia/Sydney': { query: 'Sydney', label: '悉尼' },
+        'Australia/Melbourne': { query: 'Melbourne', label: '墨尔本' },
+        'Pacific/Auckland': { query: 'Auckland', label: '奥克兰' },
+        'Africa/Johannesburg': { query: 'Johannesburg', label: '约翰内斯堡' },
         'Etc/UTC': { query: 'London', label: 'UTC' }
+      };
+      const weatherTextMap = {
+        '0': '晴',
+        '1': '大部晴朗',
+        '2': '局部多云',
+        '3': '阴',
+        '45': '雾',
+        '48': '冻雾',
+        '51': '小毛毛雨',
+        '53': '毛毛雨',
+        '55': '大毛毛雨',
+        '56': '冻毛毛雨',
+        '57': '强冻毛毛雨',
+        '61': '小雨',
+        '63': '中雨',
+        '65': '大雨',
+        '66': '冻雨',
+        '67': '强冻雨',
+        '71': '小雪',
+        '73': '中雪',
+        '75': '大雪',
+        '77': '雪粒',
+        '80': '阵雨',
+        '81': '强阵雨',
+        '82': '暴雨',
+        '85': '阵雪',
+        '86': '强阵雪',
+        '95': '雷暴',
+        '96': '雷暴夹小冰雹',
+        '99': '强雷暴夹冰雹'
       };
       const normalizeEdgeTimezone = (timezone) => timezone || 'Asia/Shanghai';
       const getWeatherLookupByTimezone = (timezone) => {
@@ -5220,17 +5247,79 @@ export default {
         const leaf = (parts[parts.length - 1] || 'Shanghai').replace(/_/g, ' ');
         return { timezone: normalized, query: leaf, label: leaf };
       };
-
-      const proxyQWeatherJson = async (targetUrl) => {
-        const redactedUrl = targetUrl.replace(/([?&]key=)[^&]*/i, '$1***');
+      const roundWeatherValue = (value) => {
+        if (value === null || value === undefined || Number.isNaN(Number(value))) return '--';
+        return Math.round(Number(value));
+      };
+      const toWeatherIconCode = (weatherCode, isDay) => {
+        const code = String(weatherCode ?? '999');
+        if (code === '0' || code === '1' || code === '2') {
+          return `${code}${isDay ? 'd' : 'n'}`;
+        }
+        return code;
+      };
+      const getWeatherText = (weatherCode) => weatherTextMap[String(weatherCode)] || '未知天气';
+      const getWindDirectionText = (degrees) => {
+        if (degrees === null || degrees === undefined || Number.isNaN(Number(degrees))) return '--';
+        const labels = ['北风', '东北风', '东风', '东南风', '南风', '西南风', '西风', '西北风'];
+        const normalized = ((Number(degrees) % 360) + 360) % 360;
+        return labels[Math.round(normalized / 45) % 8];
+      };
+      const getWindScale = (speedKph) => {
+        if (speedKph === null || speedKph === undefined || Number.isNaN(Number(speedKph))) return '--';
+        const thresholds = [1, 6, 12, 20, 29, 39, 50, 62, 75, 89, 103, 118];
+        const speed = Number(speedKph);
+        let scale = 0;
+        while (scale < thresholds.length && speed >= thresholds[scale]) {
+          scale += 1;
+        }
+        return scale;
+      };
+      const encodeWeatherLocationId = (latitude, longitude) =>
+        `${Number(latitude).toFixed(4)},${Number(longitude).toFixed(4)}`;
+      const parseWeatherLocationId = (raw) => {
+        const match = String(raw || '').trim().match(/^(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$/);
+        if (!match) return null;
+        return { latitude: Number(match[1]), longitude: Number(match[2]) };
+      };
+      const createWeatherLocation = (result, fallbackSource) => ({
+        id: encodeWeatherLocationId(result.latitude, result.longitude),
+        name: result.name || fallbackSource.label,
+        lat: Number(result.latitude),
+        lon: Number(result.longitude),
+        tz: result.timezone || fallbackSource.timezone,
+        country: result.country || '',
+        adm1: result.admin1 || ''
+      });
+      const convertOpenMeteoCurrent = (current) => ({
+        obsTime: current.time || '',
+        temp: roundWeatherValue(current.temperature_2m),
+        feelsLike: roundWeatherValue(current.apparent_temperature),
+        humidity: roundWeatherValue(current.relative_humidity_2m),
+        text: getWeatherText(current.weather_code),
+        icon: toWeatherIconCode(current.weather_code, current.is_day === 1),
+        windDir: getWindDirectionText(current.wind_direction_10m),
+        windScale: getWindScale(current.wind_speed_10m)
+      });
+      const convertOpenMeteoDaily = (daily) => {
+        const dates = Array.isArray(daily.time) ? daily.time : [];
+        return dates.slice(0, 3).map((fxDate, index) => ({
+          fxDate,
+          textDay: getWeatherText(daily.weather_code && daily.weather_code[index]),
+          iconDay: toWeatherIconCode(daily.weather_code && daily.weather_code[index], true),
+          tempMin: roundWeatherValue(daily.temperature_2m_min && daily.temperature_2m_min[index]),
+          tempMax: roundWeatherValue(daily.temperature_2m_max && daily.temperature_2m_max[index])
+        }));
+      };
+      const proxyWeatherJson = async (targetUrl, sourceName) => {
         let res;
         try {
           res = await fetch(targetUrl);
         } catch (err) {
           return new Response(JSON.stringify({
             code: '502',
-            error: 'qweather_fetch_failed',
-            upstreamUrl: redactedUrl,
+            error: `${sourceName}_fetch_failed`,
+            upstreamUrl: targetUrl,
             message: String(err)
           }), { status: 502, headers: { 'Content-Type': 'application/json' } });
         }
@@ -5241,10 +5330,10 @@ export default {
         if (!res.ok) {
           return new Response(JSON.stringify({
             code: String(res.status),
-            error: 'qweather_upstream_error',
+            error: `${sourceName}_upstream_error`,
             upstreamStatus: res.status,
             upstreamContentType: contentType,
-            upstreamUrl: redactedUrl,
+            upstreamUrl: targetUrl,
             upstreamBody: (text || '').slice(0, 800)
           }), { status: 502, headers: { 'Content-Type': 'application/json' } });
         }
@@ -5256,25 +5345,52 @@ export default {
         } catch (err) {
           return new Response(JSON.stringify({
             code: '502',
-            error: 'qweather_invalid_json',
+            error: `${sourceName}_invalid_json`,
             upstreamContentType: contentType,
-            upstreamUrl: redactedUrl,
+            upstreamUrl: targetUrl,
             upstreamBody: (text || '').slice(0, 800),
             message: String(err)
           }), { status: 502, headers: { 'Content-Type': 'application/json' } });
         }
       };
+      const fetchOpenMeteoGeo = async (query, count) => {
+        const targetUrl = `${openMeteoGeocodeBase}?name=${encodeURIComponent(query)}&count=${count}&language=zh&format=json`;
+        const geoRes = await proxyWeatherJson(targetUrl, 'open_meteo_geo');
+        if (geoRes.status !== 200) {
+          return geoRes;
+        }
+        const geoData = await geoRes.json();
+        const results = Array.isArray(geoData.results) ? geoData.results : [];
+        return createJsonResponse({
+          code: '200',
+          location: results
+        });
+      };
+      const fetchOpenMeteoForecast = async (latitude, longitude, forecastDays) => {
+        const targetUrl = `${openMeteoForecastBase}?latitude=${encodeURIComponent(latitude)}&longitude=${encodeURIComponent(longitude)}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,is_day,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=${forecastDays}&timezone=auto`;
+        const forecastRes = await proxyWeatherJson(targetUrl, 'open_meteo_forecast');
+        if (forecastRes.status !== 200) {
+          return forecastRes;
+        }
+        const forecastData = await forecastRes.json();
+        if (!forecastData.current || !forecastData.daily) {
+          return new Response(JSON.stringify({
+            code: '502',
+            error: 'open_meteo_incomplete_response',
+            upstreamUrl: targetUrl
+          }), { status: 502, headers: { 'Content-Type': 'application/json' } });
+        }
+        return createJsonResponse({
+          code: '200',
+          now: convertOpenMeteoCurrent(forecastData.current),
+          daily: convertOpenMeteoDaily(forecastData.daily)
+        });
+      };
 
       if (url.pathname === '/api/weather/edge') {
-        if (!env.WEATHER_API_KEY) {
-          return createJsonResponse({ code: '503', error: 'weather_not_configured' }, 503);
-        }
-
         const edgeTimezone = normalizeEdgeTimezone(request.cf && request.cf.timezone);
         const source = getWeatherLookupByTimezone(edgeTimezone);
-        const geoRes = await proxyQWeatherJson(
-          `${qweatherGeoBase}/v2/city/lookup?location=${encodeURIComponent(source.query)}&key=${env.WEATHER_API_KEY}&number=1`
-        );
+        const geoRes = await fetchOpenMeteoGeo(source.query, 1);
         if (geoRes.status !== 200) {
           return geoRes;
         }
@@ -5289,22 +5405,14 @@ export default {
           }), { status: 502, headers: jsonHeaders });
         }
 
-        const location = geoData.location[0];
-        const [nowRes, forecastRes] = await Promise.all([
-          proxyQWeatherJson(
-            `${qweatherApiBase}/v7/weather/now?location=${encodeURIComponent(location.id)}&key=${env.WEATHER_API_KEY}`
-          ),
-          proxyQWeatherJson(
-            `${qweatherApiBase}/v7/weather/3d?location=${encodeURIComponent(location.id)}&key=${env.WEATHER_API_KEY}`
-          )
-        ]);
+        const location = createWeatherLocation(geoData.location[0], source);
+        const forecastRes = await fetchOpenMeteoForecast(location.lat, location.lon, 3);
+        if (forecastRes.status !== 200) {
+          return forecastRes;
+        }
 
-        if (nowRes.status !== 200) return nowRes;
-        if (forecastRes.status !== 200) return forecastRes;
-
-        const nowData = await nowRes.json();
         const forecastData = await forecastRes.json();
-        if (nowData.code !== '200' || forecastData.code !== '200') {
+        if (forecastData.code !== '200') {
           return new Response(JSON.stringify({
             code: '502',
             error: 'edge_weather_lookup_failed',
@@ -5318,49 +5426,52 @@ export default {
           timezone: edgeTimezone,
           source,
           location,
-          now: nowData.now,
+          now: forecastData.now,
           forecast: forecastData.daily
         });
       }
 
       if (url.pathname === '/api/weather/now') {
-        if (!env.WEATHER_API_KEY) {
-          return createJsonResponse({ code: '503', error: 'weather_not_configured' }, 503);
-        }
-        const location = url.searchParams.get('location');
-        if (!location) {
+        const locationId = parseWeatherLocationId(url.searchParams.get('location'));
+        if (!locationId) {
           return createJsonResponse({ code: '400', error: 'missing location' }, 400);
         }
-        return await proxyQWeatherJson(
-          `${qweatherApiBase}/v7/weather/now?location=${encodeURIComponent(location)}&key=${env.WEATHER_API_KEY}`
-        );
+        const forecastRes = await fetchOpenMeteoForecast(locationId.latitude, locationId.longitude, 1);
+        if (forecastRes.status !== 200) {
+          return forecastRes;
+        }
+        const forecastData = await forecastRes.json();
+        return createJsonResponse({ code: '200', now: forecastData.now });
       }
 
       if (url.pathname === '/api/weather/3d') {
-        if (!env.WEATHER_API_KEY) {
-          return createJsonResponse({ code: '503', error: 'weather_not_configured' }, 503);
-        }
-        const location = url.searchParams.get('location');
-        if (!location) {
+        const locationId = parseWeatherLocationId(url.searchParams.get('location'));
+        if (!locationId) {
           return createJsonResponse({ code: '400', error: 'missing location' }, 400);
         }
-        return await proxyQWeatherJson(
-          `${qweatherApiBase}/v7/weather/3d?location=${encodeURIComponent(location)}&key=${env.WEATHER_API_KEY}`
-        );
+        const forecastRes = await fetchOpenMeteoForecast(locationId.latitude, locationId.longitude, 3);
+        if (forecastRes.status !== 200) {
+          return forecastRes;
+        }
+        const forecastData = await forecastRes.json();
+        return createJsonResponse({ code: '200', daily: forecastData.daily });
       }
 
       if (url.pathname === '/api/weather/geo') {
-        if (!env.WEATHER_API_KEY) {
-          return createJsonResponse({ code: '503', error: 'weather_not_configured' }, 503);
-        }
         const location = url.searchParams.get('location');
-        const number = url.searchParams.get('number') || '8';
+        const number = Math.min(Number(url.searchParams.get('number') || '8') || 8, 20);
         if (!location) {
           return createJsonResponse({ code: '400', error: 'missing location' }, 400);
         }
-        return await proxyQWeatherJson(
-          `${qweatherGeoBase}/v2/city/lookup?location=${encodeURIComponent(location)}&key=${env.WEATHER_API_KEY}&number=${number}`
-        );
+        const geoRes = await fetchOpenMeteoGeo(location, number);
+        if (geoRes.status !== 200) {
+          return geoRes;
+        }
+        const geoData = await geoRes.json();
+        return createJsonResponse({
+          code: '200',
+          location: (geoData.location || []).map((item) => createWeatherLocation(item, { label: item.name || location, timezone: item.timezone || 'UTC' }))
+        });
       }
 
       if (url.pathname === '/api/getLinks') {
