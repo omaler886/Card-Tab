@@ -2302,7 +2302,6 @@ const HTML_CONTENT = `
 
     <script>
     // 搜索引擎配置
-    const CF_EDGE_TIMEZONE = '__CF_EDGE_TIMEZONE__';
     const searchEngines = {
         baidu: "https://www.baidu.com/s?wd=",
         bing: "https://www.bing.com/search?q=",
@@ -4572,7 +4571,7 @@ const HTML_CONTENT = `
     let currentEdgeTimezone = 'Asia/Shanghai';
 
     function normalizeEdgeTimezone(timezone) {
-        if (!timezone || timezone === '__CF_EDGE_TIMEZONE__') return 'Asia/Shanghai';
+        if (!timezone) return 'Asia/Shanghai';
         return timezone;
     }
 
@@ -4611,15 +4610,14 @@ const HTML_CONTENT = `
 
     // 初始化天气
     async function initWeather() {
-        currentEdgeTimezone = normalizeEdgeTimezone(CF_EDGE_TIMEZONE);
         const cache = getWeatherCache();
         if (cache && cache.location && cache.now && cache.forecast) {
+            currentEdgeTimezone = normalizeEdgeTimezone(cache.timezone || currentEdgeTimezone);
             currentWeatherLocation = cache.location;
             currentWeatherSource = cache.source || getWeatherLookupByTimezone(cache.timezone || currentEdgeTimezone);
             updateWeatherSourceNote(currentWeatherSource);
             renderWeatherMini(cache.now, cache.location);
             renderWeatherModal(cache.now, cache.forecast, cache.location);
-            return;
         }
         await loadWeatherByEdgeTimezone();
     }
@@ -4631,7 +4629,6 @@ const HTML_CONTENT = `
             if (!data) return null;
             const cache = JSON.parse(data);
             if (Date.now() - cache.timestamp > WEATHER_CACHE_DURATION) return null;
-            if ((cache.timezone || 'Asia/Shanghai') !== normalizeEdgeTimezone(currentEdgeTimezone)) return null;
             return cache;
         } catch (e) { return null; }
     }
@@ -4650,31 +4647,30 @@ const HTML_CONTENT = `
 
     // 根据 Cloudflare 边缘节点时区加载天气
     async function loadWeatherByEdgeTimezone() {
-        const source = getWeatherLookupByTimezone(currentEdgeTimezone);
-        currentWeatherSource = source;
-        updateWeatherSourceNote(source);
-
         try {
             document.getElementById('weather-mini').innerHTML = '<span class="weather-loading">定位中...</span>';
-            console.log('开始根据边缘节点时区定位天气:', source);
-            const geoRes = await fetch(WEATHER_API + '/geo?location=' + encodeURIComponent(source.query) + '&number=1');
-
-            // 检查是否未配置天气服务
-            if (geoRes.status === 503) {
+            const edgeRes = await fetch(WEATHER_API + '/edge');
+            if (edgeRes.status === 503) {
                 weatherNotConfigured = true;
-                renderWeatherNotConfigured(source.label);
+                renderWeatherNotConfigured('--');
                 return;
             }
+            const edgeData = await edgeRes.json();
+            if (edgeData.code !== '200' || !edgeData.location || !edgeData.now || !edgeData.forecast) {
+                throw new Error(edgeData.error || '边缘天气查询失败');
+            }
 
-            const geoData = await geoRes.json();
-            if (geoData.code !== '200' || !geoData.location || !geoData.location.length) throw new Error('城市查询失败');
+            currentEdgeTimezone = normalizeEdgeTimezone(edgeData.timezone || currentEdgeTimezone);
+            currentWeatherSource = edgeData.source || getWeatherLookupByTimezone(currentEdgeTimezone);
+            currentWeatherLocation = edgeData.location;
 
-            currentWeatherLocation = geoData.location[0];
-            console.log('当前天气位置:', currentWeatherLocation);
-            await loadWeatherData();
+            updateWeatherSourceNote(currentWeatherSource);
+            setWeatherCache(currentWeatherLocation, edgeData.now, edgeData.forecast);
+            renderWeatherMini(edgeData.now, currentWeatherLocation);
+            renderWeatherModal(edgeData.now, edgeData.forecast, currentWeatherLocation);
         } catch (e) {
             console.error('天气加载失败详细错误:', e);
-            updateWeatherSourceNote(source);
+            updateWeatherSourceNote(currentWeatherSource || getWeatherLookupByTimezone(currentEdgeTimezone));
             document.getElementById('weather-mini').innerHTML = '<span class="weather-loading" title="' + e.message + '">加载失败</span>';
         }
     }
@@ -4934,12 +4930,9 @@ async function validateAdminToken(authToken, env) {
 export default {
     async fetch(request, env) {
       const url = new URL(request.url);
-      const serializeInlineValue = (value) => String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
       if (url.pathname === '/') {
-        const edgeTimezone = request.cf && request.cf.timezone ? request.cf.timezone : 'Asia/Shanghai';
-        const htmlContent = HTML_CONTENT.replace('__CF_EDGE_TIMEZONE__', serializeInlineValue(edgeTimezone));
-        return new Response(htmlContent, {
+        return new Response(HTML_CONTENT, {
           headers: { 'Content-Type': 'text/html' }
         });
       }
@@ -4958,6 +4951,49 @@ export default {
       const qweatherHost = normalizeBaseUrl(env.WEATHER_API_HOST);
       const qweatherApiBase = qweatherHost || 'https://api.qweather.com';
       const qweatherGeoBase = qweatherHost ? `${qweatherApiBase}/geo` : 'https://geoapi.qweather.com';
+      const edgeTimezoneCityMap = {
+        'Asia/Shanghai': { query: '上海', label: '上海' },
+        'Asia/Hong_Kong': { query: '香港', label: '香港' },
+        'Asia/Tokyo': { query: '东京', label: '东京' },
+        'Asia/Seoul': { query: '首尔', label: '首尔' },
+        'Asia/Singapore': { query: '新加坡', label: '新加坡' },
+        'Asia/Bangkok': { query: '曼谷', label: '曼谷' },
+        'Asia/Kuala_Lumpur': { query: '吉隆坡', label: '吉隆坡' },
+        'Asia/Jakarta': { query: '雅加达', label: '雅加达' },
+        'Asia/Kolkata': { query: '孟买', label: '孟买' },
+        'Asia/Dubai': { query: '迪拜', label: '迪拜' },
+        'Europe/London': { query: '伦敦', label: '伦敦' },
+        'Europe/Paris': { query: '巴黎', label: '巴黎' },
+        'Europe/Berlin': { query: '柏林', label: '柏林' },
+        'Europe/Madrid': { query: '马德里', label: '马德里' },
+        'Europe/Moscow': { query: '莫斯科', label: '莫斯科' },
+        'America/New_York': { query: '纽约', label: '纽约' },
+        'America/Chicago': { query: '芝加哥', label: '芝加哥' },
+        'America/Denver': { query: '丹佛', label: '丹佛' },
+        'America/Los_Angeles': { query: '洛杉矶', label: '洛杉矶' },
+        'America/Phoenix': { query: '菲尼克斯', label: '菲尼克斯' },
+        'America/Toronto': { query: '多伦多', label: '多伦多' },
+        'America/Sao_Paulo': { query: '圣保罗', label: '圣保罗' },
+        'Australia/Sydney': { query: '悉尼', label: '悉尼' },
+        'Australia/Melbourne': { query: '墨尔本', label: '墨尔本' },
+        'Pacific/Auckland': { query: '奥克兰', label: '奥克兰' },
+        'Africa/Johannesburg': { query: '约翰内斯堡', label: '约翰内斯堡' },
+        'Etc/UTC': { query: 'London', label: 'UTC' }
+      };
+      const normalizeEdgeTimezone = (timezone) => timezone || 'Asia/Shanghai';
+      const getWeatherLookupByTimezone = (timezone) => {
+        const normalized = normalizeEdgeTimezone(timezone);
+        const mapped = edgeTimezoneCityMap[normalized];
+        if (mapped) {
+          return { timezone: normalized, query: mapped.query, label: mapped.label };
+        }
+        if (/^Etc\//.test(normalized) || normalized === 'UTC') {
+          return { timezone: normalized, query: 'London', label: 'UTC' };
+        }
+        const parts = normalized.split('/');
+        const leaf = (parts[parts.length - 1] || 'Shanghai').replace(/_/g, ' ');
+        return { timezone: normalized, query: leaf, label: leaf };
+      };
 
       const proxyQWeatherJson = async (targetUrl) => {
         const redactedUrl = targetUrl.replace(/([?&]key=)[^&]*/i, '$1***');
@@ -5002,6 +5038,66 @@ export default {
           }), { status: 502, headers: { 'Content-Type': 'application/json' } });
         }
       };
+
+      if (url.pathname === '/api/weather/edge') {
+        if (!env.WEATHER_API_KEY) {
+          return new Response(JSON.stringify({ code: '503', error: 'weather_not_configured' }), {
+            status: 503, headers: { 'Content-Type': 'application/json' }
+          });
+        }
+
+        const edgeTimezone = normalizeEdgeTimezone(request.cf && request.cf.timezone);
+        const source = getWeatherLookupByTimezone(edgeTimezone);
+        const geoRes = await proxyQWeatherJson(
+          `${qweatherGeoBase}/v2/city/lookup?location=${encodeURIComponent(source.query)}&key=${env.WEATHER_API_KEY}&number=1`
+        );
+        if (geoRes.status !== 200) {
+          return geoRes;
+        }
+
+        const geoData = await geoRes.json();
+        if (geoData.code !== '200' || !geoData.location || !geoData.location.length) {
+          return new Response(JSON.stringify({
+            code: '502',
+            error: 'edge_city_lookup_failed',
+            timezone: edgeTimezone,
+            source
+          }), { status: 502, headers: { 'Content-Type': 'application/json' } });
+        }
+
+        const location = geoData.location[0];
+        const [nowRes, forecastRes] = await Promise.all([
+          proxyQWeatherJson(
+            `${qweatherApiBase}/v7/weather/now?location=${encodeURIComponent(location.id)}&key=${env.WEATHER_API_KEY}`
+          ),
+          proxyQWeatherJson(
+            `${qweatherApiBase}/v7/weather/3d?location=${encodeURIComponent(location.id)}&key=${env.WEATHER_API_KEY}`
+          )
+        ]);
+
+        if (nowRes.status !== 200) return nowRes;
+        if (forecastRes.status !== 200) return forecastRes;
+
+        const nowData = await nowRes.json();
+        const forecastData = await forecastRes.json();
+        if (nowData.code !== '200' || forecastData.code !== '200') {
+          return new Response(JSON.stringify({
+            code: '502',
+            error: 'edge_weather_lookup_failed',
+            timezone: edgeTimezone,
+            source
+          }), { status: 502, headers: { 'Content-Type': 'application/json' } });
+        }
+
+        return new Response(JSON.stringify({
+          code: '200',
+          timezone: edgeTimezone,
+          source,
+          location,
+          now: nowData.now,
+          forecast: forecastData.daily
+        }), { headers: { 'Content-Type': 'application/json' } });
+      }
 
       if (url.pathname === '/api/weather/now') {
         if (!env.WEATHER_API_KEY) {
