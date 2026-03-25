@@ -148,10 +148,10 @@ const HTML_CONTENT = `
         background: rgba(248, 246, 242, 0.4);
         border-bottom: 1px solid rgba(67, 184, 131, 0.12);
         z-index: 1000;
-        padding: 10px;
+        padding: 8px 10px;
         transition: background-color 0.55s ease, border-color 0.55s ease, box-shadow 0.55s ease, backdrop-filter 0.55s ease;
-        height: 150px;
-        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+        height: 142px;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
         backdrop-filter: blur(22px) saturate(145%);
         -webkit-backdrop-filter: blur(22px) saturate(145%);
     }
@@ -165,8 +165,8 @@ const HTML_CONTENT = `
     /* 分类快捷按钮容器样式移至搜索栏内 */
 
     .category-button {
-        padding: 5px 10px;
-        border-radius: 15px;
+        padding: 7px 14px;
+        border-radius: 999px;
         background-color: #f9fafb;
         color: #43b883;
         border: none;
@@ -199,10 +199,9 @@ const HTML_CONTENT = `
     .category-button.active {
         background-color: #43b883;
         color: white;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 8px 18px rgba(67, 184, 131, 0.22);
         transform: translateY(-1px);
         font-weight: 600;
-        border-bottom: 2px solid #35a674;
     }
 
     body.dark-theme .category-button:hover,
@@ -234,13 +233,13 @@ const HTML_CONTENT = `
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        margin: 2px auto 12px;
-        min-height: 34px;
-        padding: 7px 16px;
-        font-size: 14px;
+        margin: 0 auto 8px;
+        min-height: 30px;
+        padding: 6px 14px;
+        font-size: 13px;
         color: #5f6c74;
         font-style: italic;
-        max-width: 720px;
+        max-width: 640px;
         margin-left: auto;
         margin-right: auto;
         border-radius: 999px;
@@ -296,7 +295,7 @@ const HTML_CONTENT = `
         right: 10px;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
         z-index: 1001;
     }
 
@@ -305,8 +304,8 @@ const HTML_CONTENT = `
         background-color: #43b883;
         color: white;
         border: none;
-        border-radius: 4px;
-        padding: 8px 16px;
+        border-radius: 14px;
+        padding: 8px 15px;
         font-size: 13px;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -331,8 +330,8 @@ const HTML_CONTENT = `
         background-color: #43b883;
         color: white;
         border: none;
-        border-radius: 4px;
-        padding: 8px 16px;
+        border-radius: 14px;
+        padding: 8px 15px;
         font-size: 13px;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -361,9 +360,9 @@ const HTML_CONTENT = `
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 36px;
-        height: 36px;
-        border-radius: 4px;
+        width: 38px;
+        height: 38px;
+        border-radius: 14px;
         padding: 0;
     }
 
@@ -387,15 +386,15 @@ const HTML_CONTENT = `
         background-color: #43b883;
         color: white;
         border: none;
-        border-radius: 4px;
+        border-radius: 14px;
         padding: 0;
         cursor: pointer;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 36px;
-        height: 36px;
+        width: 38px;
+        height: 38px;
         position: relative;
     }
 
@@ -764,7 +763,7 @@ const HTML_CONTENT = `
 
     /* 主要内容区域样式 */
     .content {
-        margin-top: 170px;
+        margin-top: 158px;
         padding: 10px;
         max-width: 1600px;
         margin-left: auto;
@@ -825,12 +824,12 @@ const HTML_CONTENT = `
     .search-bar {
         display: flex;
         justify-content: center;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
         width: 100%;
         max-width: 600px;
         margin-left: auto;
         margin-right: auto;
-        border-radius: 8px;
+        border-radius: 18px;
         overflow: hidden;
         background: rgba(255, 255, 255, 0.42);
         box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
@@ -929,25 +928,20 @@ const HTML_CONTENT = `
         display: flex;
         flex-wrap: wrap; /* 允许按钮换行显示 */
         justify-content: center; /* 居中排列按钮 */
-        gap: 6px;
-        padding: 8px 12px;
-        width: 100%;
-        max-width: 1200px; /* 增加容器宽度，确保能显示更多按钮 */
+        gap: 8px;
+        padding: 0;
+        width: fit-content;
+        max-width: calc(100% - 24px);
         margin-left: auto;
         margin-right: auto;
-        margin-top: 5px; /* 减少与搜索栏的距离 */
-        background-color: rgba(255, 255, 255, 0.16);
-        border-radius: 8px;
-        box-shadow: 0 12px 26px rgba(15, 23, 42, 0.04);
-        backdrop-filter: blur(10px) saturate(140%);
-        -webkit-backdrop-filter: blur(10px) saturate(140%);
+        margin-top: 2px;
         transition: opacity 0.35s ease, transform 0.35s ease;
         position: relative; /* 确保在固定元素内正确定位 */
     }
 
     body.dark-theme .category-buttons-container {
-        background-color: rgba(10, 14, 20, 0.2);
-        box-shadow: 0 12px 28px rgba(3, 8, 18, 0.12);
+        background-color: transparent;
+        box-shadow: none;
     }
 
     /* 滚动条美化 */
@@ -1218,23 +1212,22 @@ const HTML_CONTENT = `
 
     .card-container {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-        column-gap: 16px;
-        row-gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(174px, 1fr));
+        column-gap: 12px;
+        row-gap: 12px;
         justify-content: start;
-        padding: 15px;
-        padding-left: 28px;
+        padding: 12px 14px 8px 22px;
         margin: 0 auto;
-        max-width: 1600px;
+        max-width: 1540px;
     }
 
     .card {
         background-color: rgba(255, 255, 255, 0.66);
-        border-radius: 12px;
-        padding: 14px;
+        border-radius: 18px;
+        padding: 12px 14px;
         width: auto;
-        min-height: 86px;
-        box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+        min-height: 74px;
+        box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
         cursor: pointer;
         transition: transform 0.3s ease, box-shadow 0.35s ease, background-color 0.55s ease, border-color 0.55s ease;
         position: relative;
@@ -1253,7 +1246,7 @@ const HTML_CONTENT = `
         background-color: rgba(14, 19, 29, 0.48);
         border-left-color: #7ca4ea;
         border-color: rgba(124, 164, 234, 0.14);
-        box-shadow: 0 14px 30px rgba(4, 10, 22, 0.24);
+        box-shadow: 0 14px 26px rgba(4, 10, 22, 0.22);
     }
 
     @keyframes fadeIn {
@@ -1262,14 +1255,14 @@ const HTML_CONTENT = `
     }
 
     .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
     }
 
     .card-top {
         display: flex;
         align-items: center;
-        margin-bottom: 5px;
+        margin-bottom: 4px;
     }
 
     .card-icon {
@@ -1279,7 +1272,7 @@ const HTML_CONTENT = `
     }
 
     .card-title {
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 600;
         color: #222;
         white-space: nowrap;
@@ -1289,7 +1282,7 @@ const HTML_CONTENT = `
     }
 
     .card-url {
-        font-size: 12px;
+        font-size: 11px;
         color: #888;
         white-space: nowrap;
         overflow: hidden;
@@ -1644,10 +1637,10 @@ const HTML_CONTENT = `
             display: grid;
             grid-template-columns: minmax(0, 1fr) auto;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             padding: 10px 12px;
             height: auto;
-            min-height: 210px;
+            min-height: 198px;
             box-shadow: none;
             backdrop-filter: blur(18px) saturate(135%);
             -webkit-backdrop-filter: blur(18px) saturate(135%);
@@ -1707,19 +1700,18 @@ const HTML_CONTENT = `
         .category-buttons-container {
             width: 100%;
             max-width: none;
-            padding: 6px 4px 4px;
+            padding: 2px 0 0;
             overflow-x: auto;
             flex-wrap: nowrap;
             justify-content: flex-start;
             margin: 0;
             scrollbar-width: none;
             -ms-overflow-style: none;
-            border-radius: 8px;
             gap: 6px;
         }
 
         body.dark-theme .category-buttons-container {
-            background-color: rgba(10, 14, 20, 0.24);
+            background-color: transparent;
         }
 
         .category-button {
@@ -1732,7 +1724,7 @@ const HTML_CONTENT = `
         }
 
         .content {
-            margin-top: 232px;
+            margin-top: 218px;
             margin-bottom: 96px;
             padding: 12px;
             transition: opacity 0.3s ease;
@@ -1801,10 +1793,10 @@ const HTML_CONTENT = `
         .card {
             width: auto;
             max-width: 100%;
-            min-height: 82px;
-            padding: 14px;
+            min-height: 78px;
+            padding: 13px 14px;
             margin: 0;
-            border-radius: 14px;
+            border-radius: 18px;
         }
 
         .card-title {
