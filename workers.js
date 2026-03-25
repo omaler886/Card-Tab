@@ -12,12 +12,64 @@ const HTML_CONTENT = `
         font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         margin: 0;
         padding: 0;
+        position: relative;
+        overflow-x: hidden;
         background-color: #f8f6f2; /* 米白色背景 */
         background-image: radial-gradient(circle at top, rgba(67, 184, 131, 0.08), transparent 38%), radial-gradient(circle at bottom right, rgba(93, 127, 185, 0.08), transparent 30%);
         background-attachment: fixed;
         color: #222; /* 深灰字体 */
         transition: all 0.3s ease;
         min-height: 100vh;
+    }
+
+    .ambient-background {
+        position: fixed;
+        inset: -18vh -14vw;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+    }
+
+    .ambient-grid {
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(rgba(67, 184, 131, 0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(93, 127, 185, 0.045) 1px, transparent 1px);
+        background-size: 110px 110px;
+        opacity: 0.35;
+        animation: ambientGridPan 34s linear infinite alternate;
+    }
+
+    .ambient-orb {
+        position: absolute;
+        width: 40vw;
+        height: 40vw;
+        min-width: 240px;
+        min-height: 240px;
+        max-width: 680px;
+        max-height: 680px;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.46;
+        will-change: transform;
+        transition: transform 16s ease-in-out, opacity 9s ease, background 10s ease;
+    }
+
+    .ambient-orb.orb-a { background: rgba(67, 184, 131, 0.36); }
+    .ambient-orb.orb-b { background: rgba(93, 127, 185, 0.28); }
+    .ambient-orb.orb-c { background: rgba(255, 194, 102, 0.22); }
+
+    body.dark-theme .ambient-grid {
+        opacity: 0.16;
+        background-image: linear-gradient(rgba(93, 127, 185, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(67, 184, 131, 0.06) 1px, transparent 1px);
+    }
+
+    body.dark-theme .ambient-orb {
+        opacity: 0.28;
+    }
+
+    @keyframes ambientGridPan {
+        from { transform: translate3d(-3%, -2%, 0); }
+        to { transform: translate3d(3%, 2%, 0); }
     }
 
     /* 暗色模式样式 */
@@ -639,6 +691,8 @@ const HTML_CONTENT = `
         max-width: 1600px;
         margin-left: auto;
         margin-right: auto;
+        position: relative;
+        z-index: 1;
         transition: opacity 0.3s ease;
     }
 
@@ -1354,6 +1408,23 @@ const HTML_CONTENT = `
         border-color: #43b883;
         color: #fff;
     }
+
+    .weather-source-note {
+        margin-bottom: 14px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.58);
+        border: 1px solid rgba(67, 184, 131, 0.12);
+        font-size: 12px;
+        color: #61707d;
+        line-height: 1.55;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+    }
+
+    .weather-source-note strong {
+        color: #2d3a45;
+    }
     body.dark-theme .weather-mode-btn {
         background: #3a3a3a;
         border-color: #555;
@@ -1365,6 +1436,12 @@ const HTML_CONTENT = `
         border-color: #43b883;
         color: #fff;
     }
+    body.dark-theme .weather-source-note {
+        background: rgba(42, 46, 56, 0.78);
+        border-color: rgba(93, 127, 185, 0.16);
+        color: #9ba6b3;
+    }
+    body.dark-theme .weather-source-note strong { color: #e3e3e3; }
 
     /* 当前天气 */
     .weather-current {
@@ -2047,6 +2124,12 @@ const HTML_CONTENT = `
 </head>
 
 <body>
+    <div class="ambient-background" aria-hidden="true">
+        <div class="ambient-grid"></div>
+        <div class="ambient-orb orb-a"></div>
+        <div class="ambient-orb orb-b"></div>
+        <div class="ambient-orb orb-c"></div>
+    </div>
     <div class="fixed-elements">
         <h3><span class="weather-mini" id="weather-mini" onclick="openWeatherModal()"><span class="weather-loading">加载中...</span></span></h3>
         <div class="center-content">
@@ -2219,6 +2302,7 @@ const HTML_CONTENT = `
 
     <script>
     // 搜索引擎配置
+    const CF_EDGE_TIMEZONE = '__CF_EDGE_TIMEZONE__';
     const searchEngines = {
         baidu: "https://www.baidu.com/s?wd=",
         bing: "https://www.bing.com/search?q=",
@@ -2233,6 +2317,35 @@ const HTML_CONTENT = `
         const timestamp = new Date().toISOString();
         const logEntry = timestamp + ': ' + action + ' - ' + JSON.stringify(details);
         console.log(logEntry);
+    }
+
+    function getRandomNumber(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    function animateAmbientBackground() {
+        const palette = [
+            ['rgba(67, 184, 131, 0.34)', 'rgba(139, 214, 171, 0.18)'],
+            ['rgba(93, 127, 185, 0.28)', 'rgba(142, 168, 214, 0.16)'],
+            ['rgba(255, 194, 102, 0.2)', 'rgba(250, 138, 98, 0.14)']
+        ];
+
+        document.querySelectorAll('.ambient-orb').forEach(function(orb, index) {
+            const x = getRandomNumber(-6, 72);
+            const y = getRandomNumber(-8, 68);
+            const scale = getRandomNumber(0.86, 1.34);
+            const opacity = getRandomNumber(0.22, 0.52);
+            const colors = palette[index % palette.length];
+
+            orb.style.transform = 'translate3d(' + x + 'vw, ' + y + 'vh, 0) scale(' + scale.toFixed(2) + ')';
+            orb.style.opacity = opacity.toFixed(2);
+            orb.style.background = 'radial-gradient(circle, ' + colors[0] + ' 0%, ' + colors[1] + ' 52%, rgba(255,255,255,0) 74%)';
+        });
+    }
+
+    function initAmbientBackground() {
+        animateAmbientBackground();
+        setInterval(animateAmbientBackground, 12000);
     }
 
     // 设置当前搜索引擎
@@ -4410,8 +4523,6 @@ const HTML_CONTENT = `
     const WEATHER_API = '/api/weather';  // 后端代理
     const WEATHER_CACHE_KEY = 'card_tab_weather_cache';
     const WEATHER_CACHE_DURATION = 30 * 60 * 1000; // 30分钟
-    const WEATHER_MODE_KEY = 'card_tab_weather_mode'; // 定位模式：ip 或 fixed
-    const WEATHER_FIXED_CITY_KEY = 'card_tab_weather_fixed_city'; // 默认城市信息
     let weatherNotConfigured = false; // 天气服务是否未配置
 
     // 天气图标映射
@@ -4426,86 +4537,91 @@ const HTML_CONTENT = `
         '999': '❓'
     };
     const WEEKDAYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    const EDGE_TIMEZONE_CITY_MAP = {
+        'Asia/Shanghai': { query: '上海', label: '上海' },
+        'Asia/Hong_Kong': { query: '香港', label: '香港' },
+        'Asia/Tokyo': { query: '东京', label: '东京' },
+        'Asia/Seoul': { query: '首尔', label: '首尔' },
+        'Asia/Singapore': { query: '新加坡', label: '新加坡' },
+        'Asia/Bangkok': { query: '曼谷', label: '曼谷' },
+        'Asia/Kuala_Lumpur': { query: '吉隆坡', label: '吉隆坡' },
+        'Asia/Jakarta': { query: '雅加达', label: '雅加达' },
+        'Asia/Kolkata': { query: '孟买', label: '孟买' },
+        'Asia/Dubai': { query: '迪拜', label: '迪拜' },
+        'Europe/London': { query: '伦敦', label: '伦敦' },
+        'Europe/Paris': { query: '巴黎', label: '巴黎' },
+        'Europe/Berlin': { query: '柏林', label: '柏林' },
+        'Europe/Madrid': { query: '马德里', label: '马德里' },
+        'Europe/Moscow': { query: '莫斯科', label: '莫斯科' },
+        'America/New_York': { query: '纽约', label: '纽约' },
+        'America/Chicago': { query: '芝加哥', label: '芝加哥' },
+        'America/Denver': { query: '丹佛', label: '丹佛' },
+        'America/Los_Angeles': { query: '洛杉矶', label: '洛杉矶' },
+        'America/Phoenix': { query: '菲尼克斯', label: '菲尼克斯' },
+        'America/Toronto': { query: '多伦多', label: '多伦多' },
+        'America/Sao_Paulo': { query: '圣保罗', label: '圣保罗' },
+        'Australia/Sydney': { query: '悉尼', label: '悉尼' },
+        'Australia/Melbourne': { query: '墨尔本', label: '墨尔本' },
+        'Pacific/Auckland': { query: '奥克兰', label: '奥克兰' },
+        'Africa/Johannesburg': { query: '约翰内斯堡', label: '约翰内斯堡' },
+        'Etc/UTC': { query: 'London', label: 'UTC' }
+    };
 
     let currentWeatherLocation = null;
-    let weatherSearchTimer = null;
+    let currentWeatherSource = null;
+    let currentEdgeTimezone = 'Asia/Shanghai';
 
-    // 获取定位模式
-    function getWeatherMode() {
-        return localStorage.getItem(WEATHER_MODE_KEY) || 'ip';
+    function normalizeEdgeTimezone(timezone) {
+        if (!timezone || timezone === '__CF_EDGE_TIMEZONE__') return 'Asia/Shanghai';
+        return timezone;
     }
 
-    // 设置定位模式
-    function setWeatherMode(mode) {
-        localStorage.setItem(WEATHER_MODE_KEY, mode);
-        updateWeatherModeUI();
+    function formatTimezoneLabel(timezone) {
+        return normalizeEdgeTimezone(timezone).replace(/_/g, ' ');
     }
 
-    // 获取默认城市
-    function getFixedCity() {
-        try {
-            const data = localStorage.getItem(WEATHER_FIXED_CITY_KEY);
-            return data ? JSON.parse(data) : null;
-        } catch (e) { return null; }
-    }
-
-    // 设置默认城市
-    function setFixedCity(location) {
-        localStorage.setItem(WEATHER_FIXED_CITY_KEY, JSON.stringify(location));
-    }
-
-    // 更新模式切换UI
-    function updateWeatherModeUI() {
-        const mode = getWeatherMode();
-        const ipBtn = document.getElementById('weather-mode-ip');
-        const fixedBtn = document.getElementById('weather-mode-fixed');
-        if (ipBtn && fixedBtn) {
-            ipBtn.classList.toggle('active', mode === 'ip');
-            fixedBtn.classList.toggle('active', mode === 'fixed');
+    function getWeatherSourceText(source) {
+        const activeSource = source || currentWeatherSource;
+        if (!activeSource) {
+            return '边缘节点时区：' + formatTimezoneLabel(currentEdgeTimezone);
         }
+        return '边缘节点时区：' + formatTimezoneLabel(activeSource.timezone) + ' · 映射城市：' + activeSource.label;
     }
 
-    // 切换到IP定位模式
-    async function switchToIPMode() {
-        setWeatherMode('ip');
-        localStorage.removeItem(WEATHER_CACHE_KEY);
-        document.getElementById('weather-mini').innerHTML = '<span class="weather-loading">定位中...</span>';
-        await loadWeatherByIP();
+    function updateWeatherSourceNote(source) {
+        const noteEl = document.getElementById('weather-source-note');
+        if (!noteEl) return;
+        noteEl.innerHTML = '<strong>定位来源</strong> ' + getWeatherSourceText(source);
+    }
+
+    function getWeatherLookupByTimezone(timezone) {
+        const normalized = normalizeEdgeTimezone(timezone);
+        const mapped = EDGE_TIMEZONE_CITY_MAP[normalized];
+        if (mapped) {
+            return { timezone: normalized, query: mapped.query, label: mapped.label };
+        }
+        if (/^Etc\//.test(normalized) || normalized === 'UTC') {
+            return { timezone: normalized, query: 'London', label: 'UTC' };
+        }
+
+        const parts = normalized.split('/');
+        const leaf = (parts[parts.length - 1] || 'Shanghai').replace(/_/g, ' ');
+        return { timezone: normalized, query: leaf, label: leaf };
     }
 
     // 初始化天气
     async function initWeather() {
-        updateWeatherModeUI();
-        const mode = getWeatherMode();
-
-        // 如果是默认城市模式，优先使用默认城市
-        if (mode === 'fixed') {
-            const fixedCity = getFixedCity();
-            if (fixedCity) {
-                // 检查缓存是否有效
-                const cache = getWeatherCache();
-                if (cache && cache.location && cache.location.id === fixedCity.id && cache.now && cache.forecast) {
-                    currentWeatherLocation = cache.location;
-                    renderWeatherMini(cache.now, cache.location);
-                    renderWeatherModal(cache.now, cache.forecast, cache.location);
-                    return;
-                }
-                // 缓存无效，使用默认城市重新加载天气
-                currentWeatherLocation = fixedCity;
-                await loadWeatherData();
-                return;
-            }
-        }
-
-        // IP定位模式或没有设置默认城市
+        currentEdgeTimezone = normalizeEdgeTimezone(CF_EDGE_TIMEZONE);
         const cache = getWeatherCache();
         if (cache && cache.location && cache.now && cache.forecast) {
             currentWeatherLocation = cache.location;
+            currentWeatherSource = cache.source || getWeatherLookupByTimezone(cache.timezone || currentEdgeTimezone);
+            updateWeatherSourceNote(currentWeatherSource);
             renderWeatherMini(cache.now, cache.location);
             renderWeatherModal(cache.now, cache.forecast, cache.location);
             return;
         }
-        await loadWeatherByIP();
+        await loadWeatherByEdgeTimezone();
     }
 
     // 获取缓存
@@ -4515,6 +4631,7 @@ const HTML_CONTENT = `
             if (!data) return null;
             const cache = JSON.parse(data);
             if (Date.now() - cache.timestamp > WEATHER_CACHE_DURATION) return null;
+            if ((cache.timezone || 'Asia/Shanghai') !== normalizeEdgeTimezone(currentEdgeTimezone)) return null;
             return cache;
         } catch (e) { return null; }
     }
@@ -4522,34 +4639,34 @@ const HTML_CONTENT = `
     // 设置缓存
     function setWeatherCache(location, now, forecast) {
         localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({
-            location: location, now: now, forecast: forecast, timestamp: Date.now()
+            timezone: normalizeEdgeTimezone(currentEdgeTimezone),
+            source: currentWeatherSource,
+            location: location,
+            now: now,
+            forecast: forecast,
+            timestamp: Date.now()
         }));
     }
 
-    // IP定位加载天气
-    async function loadWeatherByIP() {
-        try {
-            console.log('开始IP定位...');
-            const ipRes = await fetch('https://ipapi.co/json/');
-            console.log('IP定位响应状态:', ipRes.status);
-            if (!ipRes.ok) throw new Error('IP定位失败');
-            const ipData = await ipRes.json();
-            console.log('IP定位数据:', ipData);
-            const cityName = ipData.city || ipData.region;
-            console.log('城市名称:', cityName);
+    // 根据 Cloudflare 边缘节点时区加载天气
+    async function loadWeatherByEdgeTimezone() {
+        const source = getWeatherLookupByTimezone(currentEdgeTimezone);
+        currentWeatherSource = source;
+        updateWeatherSourceNote(source);
 
-            const geoRes = await fetch(WEATHER_API + '/geo?location=' + encodeURIComponent(cityName) + '&number=1');
-            console.log('城市查询响应状态:', geoRes.status);
+        try {
+            document.getElementById('weather-mini').innerHTML = '<span class="weather-loading">定位中...</span>';
+            console.log('开始根据边缘节点时区定位天气:', source);
+            const geoRes = await fetch(WEATHER_API + '/geo?location=' + encodeURIComponent(source.query) + '&number=1');
 
             // 检查是否未配置天气服务
             if (geoRes.status === 503) {
                 weatherNotConfigured = true;
-                renderWeatherNotConfigured(cityName);
+                renderWeatherNotConfigured(source.label);
                 return;
             }
 
             const geoData = await geoRes.json();
-            console.log('城市查询数据:', geoData);
             if (geoData.code !== '200' || !geoData.location || !geoData.location.length) throw new Error('城市查询失败');
 
             currentWeatherLocation = geoData.location[0];
@@ -4557,6 +4674,7 @@ const HTML_CONTENT = `
             await loadWeatherData();
         } catch (e) {
             console.error('天气加载失败详细错误:', e);
+            updateWeatherSourceNote(source);
             document.getElementById('weather-mini').innerHTML = '<span class="weather-loading" title="' + e.message + '">加载失败</span>';
         }
     }
@@ -4593,24 +4711,19 @@ const HTML_CONTENT = `
     // 渲染未配置天气服务的状态
     function renderWeatherNotConfigured(cityName) {
         // 迷你天气：城市 + --°
+        updateWeatherSourceNote(currentWeatherSource || getWeatherLookupByTimezone(currentEdgeTimezone));
         document.getElementById('weather-mini').innerHTML =
             '<span class="weather-city">' + (cityName || '--') + '</span>' +
             '<span class="weather-temp">--°</span>';
         // 弹窗内容
         document.getElementById('weather-current').innerHTML =
             '<div class="weather-not-configured">未配置天气 Api Key</div>';
-        // 禁用搜索框
-        const searchInput = document.getElementById('weather-city-input');
-        if (searchInput) {
-            searchInput.disabled = true;
-            searchInput.placeholder = '天气服务未启用';
-        }
     }
 
     // 渲染迷你天气
     function renderWeatherMini(now, location) {
         const icon = WEATHER_ICONS[now.icon] || '❓';
-        document.getElementById('weather-mini').title = location.name + ' · ' + now.text + ' · ' + now.temp + '°C';
+        document.getElementById('weather-mini').title = location.name + ' · ' + now.text + ' · ' + now.temp + '°C · ' + getWeatherSourceText();
         document.getElementById('weather-mini').innerHTML =
             '<span class="weather-city">' + location.name + '</span>' +
             '<span class="weather-icon">' + icon + '</span>' +
@@ -4635,6 +4748,7 @@ const HTML_CONTENT = `
         const icon = WEATHER_ICONS[now.icon] || '❓';
         const updateTime = formatWeatherUpdateTime(now.obsTime);
         const detailSuffix = updateTime ? ' · 更新于 ' + updateTime : '';
+        updateWeatherSourceNote(currentWeatherSource);
         document.getElementById('weather-current').innerHTML =
             '<div class="weather-current-icon">' + icon + '</div>' +
             '<div class="weather-current-temp">' + now.temp + '°C</div>' +
@@ -4661,64 +4775,14 @@ const HTML_CONTENT = `
     }
     function closeWeatherModal() {
         document.getElementById('weather-modal').classList.remove('show');
-        document.getElementById('weather-search-results').classList.remove('show');
-        document.getElementById('weather-city-input').value = '';
     }
     function closeWeatherModalOutside(e) {
         if (e.target.id === 'weather-modal') closeWeatherModal();
     }
 
-    // 城市搜索
-    async function searchWeatherCity(query) {
-        if (weatherNotConfigured) return; // 未配置时禁用搜索
-        if (weatherSearchTimer) clearTimeout(weatherSearchTimer);
-        const resultsEl = document.getElementById('weather-search-results');
-        if (query.length < 1) { resultsEl.classList.remove('show'); return; }
-
-        weatherSearchTimer = setTimeout(async function() {
-            try {
-                const res = await fetch(WEATHER_API + '/geo?location=' + encodeURIComponent(query) + '&number=8');
-                const data = await res.json();
-                if (data.code !== '200' || !data.location || !data.location.length) {
-                    resultsEl.innerHTML = '<div class="weather-search-item"><div class="weather-search-item-name">未找到城市</div></div>';
-                } else {
-                    resultsEl.innerHTML = data.location.map(function(loc) {
-                        return '<div class="weather-search-item" data-loc-id="' + loc.id + '" data-loc-name="' + loc.name + '" data-loc-adm1="' + loc.adm1 + '" data-loc-adm2="' + loc.adm2 + '">' +
-                        '<div class="weather-search-item-name">' + loc.name + '</div>' +
-                        '<div class="weather-search-item-path">' + loc.adm1 + ' · ' + loc.adm2 + '</div></div>';
-                    }).join('');
-                    // 为搜索结果添加点击事件
-                    resultsEl.querySelectorAll('.weather-search-item').forEach(function(item) {
-                        item.onclick = function() {
-                            selectWeatherCity(
-                                item.getAttribute('data-loc-id'),
-                                item.getAttribute('data-loc-name'),
-                                item.getAttribute('data-loc-adm1'),
-                                item.getAttribute('data-loc-adm2')
-                            );
-                        };
-                    });
-                }
-                resultsEl.classList.add('show');
-            } catch (e) { resultsEl.innerHTML = '<div class="weather-search-item"><div class="weather-search-item-name">搜索失败</div></div>'; resultsEl.classList.add('show'); }
-        }, 300);
-    }
-
-    // 选择城市
-    async function selectWeatherCity(id, name, adm1, adm2) {
-        currentWeatherLocation = { id: id, name: name, adm1: adm1, adm2: adm2 };
-        document.getElementById('weather-search-results').classList.remove('show');
-        document.getElementById('weather-city-input').value = '';
-        document.getElementById('weather-mini').innerHTML = '<span class="weather-loading">加载中...</span>';
-        // 保存为默认城市并切换模式
-        setFixedCity(currentWeatherLocation);
-        setWeatherMode('fixed');
-        localStorage.removeItem(WEATHER_CACHE_KEY);
-        await loadWeatherData();
-    }
-
     // 页面加载时初始化天气
     document.addEventListener('DOMContentLoaded', function() {
+        initAmbientBackground();
         setTimeout(function() {
             console.log('开始初始化天气组件...');
             initWeather().catch(function(err) {
@@ -4737,14 +4801,7 @@ const HTML_CONTENT = `
                 <span class="weather-modal-title">天气详情</span>
                 <button class="weather-modal-close" onclick="closeWeatherModal()">&times;</button>
             </div>
-            <div class="weather-search">
-                <input type="text" id="weather-city-input" placeholder="🔍 搜索城市..." oninput="searchWeatherCity(this.value)">
-                <div class="weather-search-results" id="weather-search-results"></div>
-            </div>
-            <div class="weather-mode-switch">
-                <button class="weather-mode-btn" id="weather-mode-ip" onclick="switchToIPMode()">🌐 IP自动定位</button>
-                <button class="weather-mode-btn" id="weather-mode-fixed">📍 默认城市</button>
-            </div>
+            <div class="weather-source-note" id="weather-source-note"><strong>定位来源</strong> 边缘节点时区：--</div>
             <div class="weather-current" id="weather-current">
                 <div class="weather-current-icon">--</div>
                 <div class="weather-current-temp">--°C</div>
@@ -4877,9 +4934,12 @@ async function validateAdminToken(authToken, env) {
 export default {
     async fetch(request, env) {
       const url = new URL(request.url);
+      const serializeInlineValue = (value) => String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
       if (url.pathname === '/') {
-        return new Response(HTML_CONTENT, {
+        const edgeTimezone = request.cf && request.cf.timezone ? request.cf.timezone : 'Asia/Shanghai';
+        const htmlContent = HTML_CONTENT.replace('__CF_EDGE_TIMEZONE__', serializeInlineValue(edgeTimezone));
+        return new Response(htmlContent, {
           headers: { 'Content-Type': 'text/html' }
         });
       }
