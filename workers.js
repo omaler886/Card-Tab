@@ -2818,7 +2818,7 @@ const HTML_CONTENT = `
             // 🔧 安全修复：避免泄露详细错误信息
             console.error('Failed to load links');
             console.error('加载链接时出错，请刷新页面重试');
-            setBootStatus('书签数据读取失败。请检查 `CARD_ORDER` KV 绑定、接口返回状态，或确认当前用户下已有数据。', true);
+            setBootStatus('书签数据读取失败。请检查 CARD_ORDER KV 绑定、接口返回状态，或确认当前用户下已有数据。', true);
         }
     }
 
