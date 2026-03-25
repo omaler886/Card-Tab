@@ -13,13 +13,17 @@ const HTML_CONTENT = `
         margin: 0;
         padding: 0;
         background-color: #f8f6f2; /* 米白色背景 */
+        background-image: radial-gradient(circle at top, rgba(67, 184, 131, 0.08), transparent 38%), radial-gradient(circle at bottom right, rgba(93, 127, 185, 0.08), transparent 30%);
+        background-attachment: fixed;
         color: #222; /* 深灰字体 */
         transition: all 0.3s ease;
+        min-height: 100vh;
     }
 
     /* 暗色模式样式 */
     body.dark-theme {
         background-color: #121418; /* 更深的背景色 */
+        background-image: radial-gradient(circle at top, rgba(93, 127, 185, 0.16), transparent 40%), radial-gradient(circle at bottom right, rgba(67, 184, 131, 0.1), transparent 32%);
         color: #e3e3e3;
     }
 
@@ -29,17 +33,21 @@ const HTML_CONTENT = `
         top: 0;
         left: 0;
         right: 0;
-        background-color: #f8f6f2; /* 与整体背景一致 */
+        background: rgba(248, 246, 242, 0.72);
+        border-bottom: 1px solid rgba(67, 184, 131, 0.12);
         z-index: 1000;
         padding: 10px;
         transition: all 0.3s ease;
         height: 150px;
-        box-shadow: none; /* 移除阴影 */
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+        backdrop-filter: blur(18px) saturate(140%);
+        -webkit-backdrop-filter: blur(18px) saturate(140%);
     }
 
     body.dark-theme .fixed-elements {
-        background-color: #121418; /* 与暗色主题背景完全一致 */
-        box-shadow: none; /* 移除阴影 */
+        background: rgba(18, 20, 24, 0.76);
+        border-bottom-color: rgba(93, 127, 185, 0.18);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
     }
 
     /* 分类快捷按钮容器样式移至搜索栏内 */
@@ -853,8 +861,22 @@ const HTML_CONTENT = `
 
     /* 主题切换按钮样式 */
     #theme-toggle {
-        font-size: 24px;
+        font-size: 15px;
         line-height: 40px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    #theme-toggle[data-theme-mode="auto"] {
+        background: linear-gradient(135deg, #43b883, #5d7fb9);
+    }
+
+    #theme-toggle[data-theme-mode="light"] {
+        background: linear-gradient(135deg, #43b883, #35a674);
+    }
+
+    #theme-toggle[data-theme-mode="dark"] {
+        background: linear-gradient(135deg, #4f6288, #232833);
     }
 
     /* 对话框样式 */
@@ -1188,16 +1210,20 @@ const HTML_CONTENT = `
         align-items: center;
         gap: 6px;
         padding: 4px 10px;
-        background: rgba(67, 184, 131, 0.1);
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(67, 184, 131, 0.18);
         border-radius: 16px;
         cursor: pointer;
         transition: all 0.2s ease;
         font-size: 13px;
         margin-left: 12px;
         vertical-align: middle;
+        backdrop-filter: blur(14px) saturate(150%);
+        -webkit-backdrop-filter: blur(14px) saturate(150%);
+        box-shadow: 0 6px 18px rgba(67, 184, 131, 0.08);
     }
     .weather-mini:hover {
-        background: rgba(67, 184, 131, 0.2);
+        background: rgba(255, 255, 255, 0.68);
         transform: translateY(-1px);
     }
     .weather-mini .weather-icon { font-size: 16px; }
@@ -1206,10 +1232,12 @@ const HTML_CONTENT = `
     .weather-mini .weather-loading { color: #999; font-size: 12px; }
 
     body.dark-theme .weather-mini {
-        background: rgba(93, 127, 185, 0.15);
+        background: rgba(30, 33, 40, 0.54);
+        border-color: rgba(93, 127, 185, 0.22);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
     }
     body.dark-theme .weather-mini:hover {
-        background: rgba(93, 127, 185, 0.25);
+        background: rgba(40, 44, 54, 0.72);
     }
     body.dark-theme .weather-mini .weather-temp { color: #e3e3e3; }
     body.dark-theme .weather-mini .weather-city { color: #aaa; }
@@ -1219,20 +1247,25 @@ const HTML_CONTENT = `
         display: none;
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.5);
+        background: rgba(7, 10, 15, 0.36);
         z-index: 2000;
         justify-content: center;
         align-items: center;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
     }
     .weather-modal.show { display: flex; }
     .weather-modal-content {
-        background: #fff;
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid rgba(255, 255, 255, 0.5);
         border-radius: 16px;
         padding: 20px;
         width: 90%;
         max-width: 360px;
         box-shadow: 0 10px 40px rgba(0,0,0,0.2);
         animation: weatherModalIn 0.25s ease;
+        backdrop-filter: blur(24px) saturate(145%);
+        -webkit-backdrop-filter: blur(24px) saturate(145%);
     }
     @keyframes weatherModalIn {
         from { opacity: 0; transform: scale(0.9) translateY(-20px); }
@@ -1273,7 +1306,7 @@ const HTML_CONTENT = `
         position: absolute;
         top: 100%;
         left: 0; right: 0;
-        background: #fff;
+        background: rgba(255, 255, 255, 0.92);
         border: 1px solid #ddd;
         border-radius: 8px;
         margin-top: 4px;
@@ -1281,6 +1314,8 @@ const HTML_CONTENT = `
         overflow-y: auto;
         display: none;
         z-index: 10;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
     }
     .weather-search-results.show { display: block; }
     .weather-search-item {
@@ -1353,7 +1388,8 @@ const HTML_CONTENT = `
         flex: 1;
         text-align: center;
         padding: 12px 8px;
-        background: #f8f9fa;
+        background: rgba(248, 249, 250, 0.75);
+        border: 1px solid rgba(67, 184, 131, 0.08);
         border-radius: 10px;
     }
     .weather-forecast-day { font-size: 13px; font-weight: 500; color: #333; margin-bottom: 6px; }
@@ -1381,20 +1417,23 @@ const HTML_CONTENT = `
     }
 
     /* 天气弹窗暗色主题 */
-    body.dark-theme .weather-modal-content { background: #1e2128; }
+    body.dark-theme .weather-modal-content {
+        background: rgba(30, 33, 40, 0.78);
+        border-color: rgba(93, 127, 185, 0.18);
+    }
     body.dark-theme .weather-modal-header { border-bottom-color: #333; }
     body.dark-theme .weather-modal-title { color: #e3e3e3; }
     body.dark-theme .weather-modal-close { color: #888; }
     body.dark-theme .weather-modal-close:hover { color: #e3e3e3; }
     body.dark-theme .weather-search input { background: #2a2e38; border-color: #444; color: #e3e3e3; }
     body.dark-theme .weather-search input:focus { border-color: #5d7fb9; }
-    body.dark-theme .weather-search-results { background: #2a2e38; border-color: #444; }
+    body.dark-theme .weather-search-results { background: rgba(42, 46, 56, 0.92); border-color: #444; }
     body.dark-theme .weather-search-item:hover { background: #333; }
     body.dark-theme .weather-search-item { border-bottom-color: #444; }
     body.dark-theme .weather-current { border-bottom-color: #333; }
     body.dark-theme .weather-current-temp { color: #e3e3e3; }
     body.dark-theme .weather-current-desc { color: #aaa; }
-    body.dark-theme .weather-forecast-item { background: #2a2e38; }
+    body.dark-theme .weather-forecast-item { background: rgba(42, 46, 56, 0.82); border-color: rgba(93, 127, 185, 0.16); }
     body.dark-theme .weather-forecast-day { color: #e3e3e3; }
     body.dark-theme .weather-forecast-temp { color: #aaa; }
 
@@ -2097,7 +2136,7 @@ const HTML_CONTENT = `
                     <path d="M12 24l12-12 12 12m-24 12 12-12 12 12" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </button>
-            <button id="theme-toggle" onclick="toggleTheme()">◑</button>
+            <button id="theme-toggle" onclick="toggleTheme()" title="主题模式：自动">自</button>
         </div>
         <!-- 添加链接对话框 -->
         <div id="dialog-overlay">
@@ -2236,8 +2275,14 @@ const HTML_CONTENT = `
     let isRemoveCategoryMode = false;
     let isEditCategoryMode = false;
     let isDarkTheme = false;
+    let currentThemeMode = 'auto';
+    let themeMediaQuery = null;
+    let themeMediaListenerBound = false;
+    let themeVisibilityListenerBound = false;
+    let themeAutoRefreshTimer = null;
     let links = [];
     const categories = {};
+    const THEME_MODE_KEY = 'card_tab_theme_mode';
 
     // 添加新分类
     async function addCategory() {
@@ -3420,7 +3465,7 @@ const HTML_CONTENT = `
 
     // 打开GitHub仓库
     function openGitHub() {
-        window.open('https://github.com/hmhm2022/Card-Tab', '_blank');
+        window.open('https://github.com/omaler886/Card-Tab', '_blank');
         logAction('访问GitHub仓库');
     }
 
@@ -3530,11 +3575,133 @@ const HTML_CONTENT = `
 
 
 
-    // 应用暗色主题
+    function getSavedThemeMode() {
+        const mode = localStorage.getItem(THEME_MODE_KEY);
+        return ['auto', 'light', 'dark'].includes(mode) ? mode : 'auto';
+    }
+
+    function getThemeMediaQuery() {
+        if (!themeMediaQuery && typeof window.matchMedia === 'function') {
+            themeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        }
+        return themeMediaQuery;
+    }
+
+    function getAutoThemeState() {
+        const hour = new Date().getHours();
+        const isNight = hour >= 18 || hour < 6;
+        const mediaQuery = getThemeMediaQuery();
+        const prefersDark = mediaQuery ? mediaQuery.matches : false;
+
+        if (prefersDark && isNight) {
+            return { isDark: true, reason: '系统深色 + 夜间' };
+        }
+        if (prefersDark) {
+            return { isDark: true, reason: '系统深色' };
+        }
+        if (isNight) {
+            return { isDark: true, reason: '夜间自动切换' };
+        }
+        return { isDark: false, reason: '白天自动切换' };
+    }
+
+    function applyThemeAppearance(shouldUseDark) {
+        if (shouldUseDark) {
+            document.body.classList.add('dark-theme');
+        } else {
+            document.body.classList.remove('dark-theme');
+        }
+        isDarkTheme = shouldUseDark;
+    }
+
+    function updateThemeToggleUI(reason) {
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        if (!themeToggleBtn) return;
+
+        const modeConfig = {
+            auto: { label: '自', title: '主题模式：自动' },
+            light: { label: '白', title: '主题模式：浅色' },
+            dark: { label: '黑', title: '主题模式：深色' }
+        };
+        const currentConfig = modeConfig[currentThemeMode] || modeConfig.auto;
+        themeToggleBtn.textContent = currentConfig.label;
+        themeToggleBtn.dataset.themeMode = currentThemeMode;
+        themeToggleBtn.title = reason ? currentConfig.title + '（' + reason + '）' : currentConfig.title;
+    }
+
+    function applyThemeMode(mode, options) {
+        const config = options || {};
+        currentThemeMode = mode;
+        const resolvedTheme = mode === 'auto'
+            ? getAutoThemeState()
+            : { isDark: mode === 'dark', reason: mode === 'dark' ? '手动深色' : '手动浅色' };
+
+        applyThemeAppearance(resolvedTheme.isDark);
+        updateThemeToggleUI(resolvedTheme.reason);
+
+        if (config.log !== false) {
+            logAction('应用主题模式', {
+                mode: currentThemeMode,
+                isDarkTheme,
+                reason: resolvedTheme.reason
+            });
+        }
+    }
+
+    function setThemeMode(mode, options) {
+        const config = options || {};
+        currentThemeMode = ['auto', 'light', 'dark'].includes(mode) ? mode : 'auto';
+
+        if (config.persist !== false) {
+            localStorage.setItem(THEME_MODE_KEY, currentThemeMode);
+        }
+
+        applyThemeMode(currentThemeMode, { log: config.log });
+    }
+
     function applyDarkTheme() {
-        document.body.classList.add('dark-theme');
-        isDarkTheme = true;
+        applyThemeAppearance(true);
+        updateThemeToggleUI('手动深色');
         logAction('应用暗色主题');
+    }
+
+    function syncThemeFromEnvironment() {
+        if (currentThemeMode === 'auto') {
+            applyThemeMode('auto', { log: false });
+        }
+    }
+
+    function initThemeSystem() {
+        currentThemeMode = getSavedThemeMode();
+        applyThemeMode(currentThemeMode, { log: false });
+
+        const mediaQuery = getThemeMediaQuery();
+        if (mediaQuery && !themeMediaListenerBound) {
+            const syncHandler = function() {
+                syncThemeFromEnvironment();
+            };
+            if (typeof mediaQuery.addEventListener === 'function') {
+                mediaQuery.addEventListener('change', syncHandler);
+            } else if (typeof mediaQuery.addListener === 'function') {
+                mediaQuery.addListener(syncHandler);
+            }
+            themeMediaListenerBound = true;
+        }
+
+        if (!themeVisibilityListenerBound) {
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    syncThemeFromEnvironment();
+                }
+            });
+            themeVisibilityListenerBound = true;
+        }
+
+        if (!themeAutoRefreshTimer) {
+            themeAutoRefreshTimer = setInterval(function() {
+                syncThemeFromEnvironment();
+            }, 60000);
+        }
     }
 
     // 全局变量用于管理对话框事件处理器
@@ -3761,17 +3928,13 @@ const HTML_CONTENT = `
 
     // 切换主题
     function toggleTheme() {
-        isDarkTheme = !isDarkTheme;
-
-        // 添加或移除暗色主题类
-        if (isDarkTheme) {
-            document.body.classList.add('dark-theme');
-        } else {
-            document.body.classList.remove('dark-theme');
-        }
-
-        logAction('切换主题', { isDarkTheme });
+        const modeSequence = ['auto', 'light', 'dark'];
+        const currentIndex = modeSequence.indexOf(currentThemeMode);
+        const nextMode = modeSequence[(currentIndex + 1) % modeSequence.length];
+        setThemeMode(nextMode, { log: true });
     }
+
+    initThemeSystem();
 
     // 返回顶部
     function scrollToTop() {
@@ -4447,20 +4610,36 @@ const HTML_CONTENT = `
     // 渲染迷你天气
     function renderWeatherMini(now, location) {
         const icon = WEATHER_ICONS[now.icon] || '❓';
+        document.getElementById('weather-mini').title = location.name + ' · ' + now.text + ' · ' + now.temp + '°C';
         document.getElementById('weather-mini').innerHTML =
             '<span class="weather-city">' + location.name + '</span>' +
             '<span class="weather-icon">' + icon + '</span>' +
             '<span class="weather-temp">' + now.temp + '°</span>';
     }
 
+    function formatWeatherUpdateTime(obsTime) {
+        if (!obsTime) return '';
+        try {
+            return new Date(obsTime).toLocaleTimeString('zh-CN', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+        } catch (error) {
+            return '';
+        }
+    }
+
     // 渲染天气弹窗
     function renderWeatherModal(now, forecast, location) {
         const icon = WEATHER_ICONS[now.icon] || '❓';
+        const updateTime = formatWeatherUpdateTime(now.obsTime);
+        const detailSuffix = updateTime ? ' · 更新于 ' + updateTime : '';
         document.getElementById('weather-current').innerHTML =
             '<div class="weather-current-icon">' + icon + '</div>' +
             '<div class="weather-current-temp">' + now.temp + '°C</div>' +
             '<div class="weather-current-desc">' + location.name + ' · ' + now.text + '</div>' +
-            '<div class="weather-current-detail">体感' + now.feelsLike + '° 湿度' + now.humidity + '% ' + now.windDir + now.windScale + '级</div>';
+            '<div class="weather-current-detail">体感' + now.feelsLike + '° 湿度' + now.humidity + '% ' + now.windDir + now.windScale + '级' + detailSuffix + '</div>';
 
         let forecastHtml = '';
         forecast.slice(0, 3).forEach(function(day, i) {
