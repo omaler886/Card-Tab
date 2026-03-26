@@ -173,13 +173,39 @@ const HTML_CONTENT = `
         cursor: pointer;
         font-size: 12px;
         font-weight: 500;
-        transition: all 0.2s ease;
+        transition:
+            transform 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+            background-color 0.28s ease,
+            color 0.28s ease,
+            box-shadow 0.3s ease,
+            opacity 0.28s ease;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
         flex: 0 0 auto;
         white-space: nowrap;
         margin: 0 2px;
         position: relative;
         overflow: hidden;
+        will-change: transform, background-color, box-shadow;
+        backface-visibility: hidden;
+        scroll-snap-align: center;
+    }
+
+    .category-button::after {
+        content: '';
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        bottom: 4px;
+        height: 2px;
+        border-radius: 999px;
+        background: currentColor;
+        opacity: 0;
+        transform: scaleX(0.35);
+        transform-origin: center;
+        transition:
+            opacity 0.28s ease,
+            transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+        pointer-events: none;
     }
 
     body.dark-theme .category-button {
@@ -204,10 +230,31 @@ const HTML_CONTENT = `
         font-weight: 600;
     }
 
+    .category-button.active::after {
+        opacity: 0.96;
+        transform: scaleX(1);
+    }
+
+    .category-button.is-activating {
+        animation: categoryButtonPulse 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
     body.dark-theme .category-button:hover,
     body.dark-theme .category-button.active {
         background-color: #5d7fb9;
         color: white;
+    }
+
+    @keyframes categoryButtonPulse {
+        0% {
+            transform: translateY(0) scale(1);
+        }
+        40% {
+            transform: translateY(-2px) scale(1.04);
+        }
+        100% {
+            transform: translateY(-1px) scale(1);
+        }
     }
 
     /* 分类按钮悬停样式 */
@@ -927,6 +974,9 @@ const HTML_CONTENT = `
         box-shadow: none;
         transition: opacity 0.35s ease, transform 0.35s ease;
         position: relative; /* 确保在固定元素内正确定位 */
+        scroll-behavior: smooth;
+        scroll-padding-inline: 18px;
+        overscroll-behavior-x: contain;
     }
 
     body.dark-theme .category-buttons-container {
@@ -1132,6 +1182,38 @@ const HTML_CONTENT = `
     .section {
         margin-bottom: 25px;
         padding: 0 15px;
+        transition:
+            opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+            transform 0.58s cubic-bezier(0.22, 1, 0.36, 1),
+            filter 0.5s ease;
+        will-change: transform, opacity;
+    }
+
+    .section.is-entering {
+        opacity: 0;
+        transform: translate3d(0, 18px, 0);
+        filter: blur(1.5px) saturate(0.96);
+    }
+
+    .section.is-visible {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+        filter: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .category-button,
+        .category-buttons-container,
+        .section {
+            transition: none !important;
+            animation: none !important;
+        }
+
+        .section.is-entering {
+            opacity: 1;
+            transform: none;
+            filter: none;
+        }
     }
 
     .section-title-container {
@@ -1702,6 +1784,7 @@ const HTML_CONTENT = `
             background-color: transparent;
             border-radius: 0;
             gap: 4px;
+            scroll-snap-type: x proximity;
         }
 
         body.dark-theme .category-buttons-container {
@@ -2488,6 +2571,8 @@ const HTML_CONTENT = `
     let currentBackgroundImageIndex = -1;
     let backgroundImageTimer = null;
     let backgroundImageSwapInFlight = false;
+    let activeCategoryName = '';
+    let scrollAnimationFrame = null;
 
     // 日志记录函数
     function logAction(action, details) {
@@ -2563,6 +2648,139 @@ const HTML_CONTENT = `
         } finally {
             clearTimeout(timer);
         }
+    }
+
+    function prefersReducedMotion() {
+        return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    }
+
+    function getFixedScrollOffset() {
+        const fixedElements = document.querySelector('.fixed-elements');
+        const fixedHeight = fixedElements
+            ? Math.ceil(fixedElements.getBoundingClientRect().height)
+            : (window.innerWidth <= 480 ? 120 : 170);
+        return fixedHeight + (window.innerWidth <= 480 ? 10 : 18);
+    }
+
+    function stopAnimatedScroll() {
+        if (scrollAnimationFrame) {
+            cancelAnimationFrame(scrollAnimationFrame);
+            scrollAnimationFrame = null;
+        }
+    }
+
+    function easeInOutQuart(progress) {
+        return progress < 0.5
+            ? 8 * progress * progress * progress * progress
+            : 1 - Math.pow(-2 * progress + 2, 4) / 2;
+    }
+
+    function smoothWindowScrollTo(targetY, duration) {
+        const finalTargetY = Math.max(0, Math.round(targetY));
+        const startY = window.pageYOffset;
+        const distance = finalTargetY - startY;
+
+        if (prefersReducedMotion() || Math.abs(distance) < 6) {
+            window.scrollTo(0, finalTargetY);
+            return;
+        }
+
+        stopAnimatedScroll();
+
+        const animationDuration = duration || 540;
+        const startTime = performance.now();
+
+        function step(now) {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / animationDuration, 1);
+            const eased = easeInOutQuart(progress);
+            window.scrollTo(0, Math.round(startY + distance * eased));
+
+            if (progress < 1) {
+                scrollAnimationFrame = requestAnimationFrame(step);
+            } else {
+                scrollAnimationFrame = null;
+            }
+        }
+
+        scrollAnimationFrame = requestAnimationFrame(step);
+    }
+
+    function centerCategoryButton(button, instant) {
+        if (!button) return;
+
+        const buttonsContainer = document.getElementById('category-buttons-container');
+        if (!buttonsContainer || buttonsContainer.scrollWidth <= buttonsContainer.clientWidth + 4) {
+            return;
+        }
+
+        button.scrollIntoView({
+            behavior: instant || prefersReducedMotion() ? 'auto' : 'smooth',
+            block: 'nearest',
+            inline: 'center'
+        });
+    }
+
+    function triggerCategoryButtonAnimation(button) {
+        if (!button || prefersReducedMotion()) return;
+
+        button.classList.remove('is-activating');
+        void button.offsetWidth;
+        button.classList.add('is-activating');
+    }
+
+    function setActiveCategoryButton(category, options) {
+        if (!category) return;
+
+        const finalOptions = Object.assign({
+            animate: false,
+            center: false,
+            instantCenter: false,
+            force: false
+        }, options || {});
+
+        const changed = activeCategoryName !== category;
+        if (!changed && !finalOptions.force && !finalOptions.center) {
+            return;
+        }
+
+        let targetButton = null;
+        document.querySelectorAll('.category-button').forEach(function(button) {
+            const isTarget = button.dataset.category === category;
+            button.classList.toggle('active', isTarget);
+            if (isTarget) {
+                targetButton = button;
+            }
+        });
+
+        if (targetButton && finalOptions.animate && (changed || finalOptions.force)) {
+            triggerCategoryButtonAnimation(targetButton);
+        }
+
+        if (targetButton && finalOptions.center && (changed || finalOptions.force)) {
+            centerCategoryButton(targetButton, finalOptions.instantCenter);
+        }
+
+        activeCategoryName = category;
+    }
+
+    function animateRenderedSections(sections) {
+        if (!sections || !sections.length) return;
+
+        if (prefersReducedMotion()) {
+            sections.forEach(function(section) {
+                section.classList.add('is-visible');
+            });
+            return;
+        }
+
+        requestAnimationFrame(function() {
+            sections.forEach(function(section, index) {
+                setTimeout(function() {
+                    section.classList.add('is-visible');
+                }, index * 38);
+            });
+        });
     }
 
     window.addEventListener('error', function(event) {
@@ -2931,12 +3149,11 @@ const HTML_CONTENT = `
                             hideSearchResults();
                         }
 
-                        // 清除所有按钮的active类
-                        document.querySelectorAll('.category-button').forEach(btn => {
-                            btn.classList.remove('active');
+                        setActiveCategoryButton(category, {
+                            animate: true,
+                            center: true,
+                            force: true
                         });
-                        // 为当前点击的按钮添加active类
-                        button.classList.add('active');
                         scrollToCategory(category);
                     };
 
@@ -2953,14 +3170,17 @@ const HTML_CONTENT = `
             }
 
             // 初始时检测当前可见分类并设置相应按钮为活跃状态
-            setTimeout(setActiveCategoryButtonByVisibility, 100);
+            activeCategoryName = '';
+            setTimeout(function() {
+                setActiveCategoryButtonByVisibility(true);
+            }, 100);
         } else {
             buttonsContainer.style.display = 'none';
         }
     }
 
     // 根据可见性设置活跃的分类按钮
-    function setActiveCategoryButtonByVisibility() {
+    function setActiveCategoryButtonByVisibility(forceCenter) {
         // 如果正在显示搜索结果，不更新分类按钮的活跃状态
         if (isShowingSearchResults) {
             return;
@@ -2973,9 +3193,9 @@ const HTML_CONTENT = `
         // 获取视窗高度
         const viewportHeight = window.innerHeight;
         // 考虑固定元素的高度
-        const fixedElementsHeight = 170;
+        const fixedElementsHeight = getFixedScrollOffset();
         // 计算视窗中心点
-        const viewportCenter = viewportHeight / 2 + fixedElementsHeight;
+        const viewportCenter = viewportHeight / 2 + fixedElementsHeight * 0.35;
 
         // 找出最接近视窗中心的分类
         let closestSection = null;
@@ -2998,23 +3218,19 @@ const HTML_CONTENT = `
             const cardContainer = closestSection.querySelector('.card-container');
             if (cardContainer && cardContainer.id) {
                 const categoryId = cardContainer.id;
-                const buttons = document.querySelectorAll('.category-button');
-
-                // 移除所有活跃状态
-                buttons.forEach(btn => btn.classList.remove('active'));
-
-                // 为匹配的分类按钮添加活跃状态
-                buttons.forEach(btn => {
-                    if (btn.dataset.category === categoryId) {
-                        btn.classList.add('active');
-                    }
+                setActiveCategoryButton(categoryId, {
+                    center: !!forceCenter,
+                    instantCenter: !!forceCenter
                 });
             }
         }
     }
 
     // 添加滚动事件监听器，滚动时更新活跃的分类按钮
-    window.addEventListener('scroll', debounce(setActiveCategoryButtonByVisibility, 100));
+    window.addEventListener('scroll', debounce(setActiveCategoryButtonByVisibility, 80), { passive: true });
+    window.addEventListener('wheel', stopAnimatedScroll, { passive: true });
+    window.addEventListener('touchstart', stopAnimatedScroll, { passive: true });
+    window.addEventListener('mousedown', stopAnimatedScroll, { passive: true });
 
     // 防抖函数，避免过多的滚动事件处理
     function debounce(func, wait) {
@@ -3033,23 +3249,10 @@ const HTML_CONTENT = `
     function scrollToCategory(category) {
         const section = document.getElementById(category);
         if (section) {
-            // 计算滚动位置，考虑顶部固定元素的高度和额外偏移量
-            let offset = 230; // 减小偏移量，确保分类标题和第一行书签完全可见
-
-            // 检查是否为移动设备
-            if (window.innerWidth <= 480) {
-                offset = 120; // 移动设备上的偏移量
-            }
-
             // 滚动到分类位置
             const sectionRect = section.getBoundingClientRect();
-            const absoluteTop = window.pageYOffset + sectionRect.top - offset;
-
-            // 使用平滑滚动效果
-            window.scrollTo({
-                top: absoluteTop,
-                behavior: 'smooth'
-            });
+            const absoluteTop = window.pageYOffset + sectionRect.top - getFixedScrollOffset();
+            smoothWindowScrollTo(absoluteTop, window.innerWidth <= 480 ? 500 : 620);
 
             logAction('滚动到分类', { category });
         }
@@ -3134,10 +3337,11 @@ const HTML_CONTENT = `
     function renderSections() {
         const container = document.getElementById('sections-container');
         container.innerHTML = '';
+        const renderedSections = [];
 
         Object.keys(categories).forEach(category => {
             const section = document.createElement('div');
-            section.className = 'section';
+            section.className = 'section is-entering';
 
             const titleContainer = document.createElement('div');
             titleContainer.className = 'section-title-container';
@@ -3198,11 +3402,13 @@ const HTML_CONTENT = `
 
             if (privateCount < linkCount || isLoggedIn) {
                 container.appendChild(section);
+                renderedSections.push(section);
             }
         });
 
         // 渲染分类快捷按钮
         renderCategoryButtons();
+        animateRenderedSections(renderedSections);
 
         if (!container.children.length) {
             if (bootStatusPinned) {
@@ -4403,10 +4609,7 @@ const HTML_CONTENT = `
 
     // 返回顶部
     function scrollToTop() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
+        smoothWindowScrollTo(0, 520);
         logAction('返回顶部');
     }
 
