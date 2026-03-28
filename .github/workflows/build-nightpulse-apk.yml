@@ -1,0 +1,55 @@
+name: Build NightPulse APK
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "sleep-monitor-android/**"
+      - ".github/workflows/build-nightpulse-apk.yml"
+  pull_request:
+    paths:
+      - "sleep-monitor-android/**"
+      - ".github/workflows/build-nightpulse-apk.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build-debug-apk:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sleep-monitor-android
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make Gradle executable
+        run: chmod +x gradlew
+
+      - name: Build debug APK
+        run: ./gradlew --no-daemon assembleDebug
+
+      - name: Prepare named artifact
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/NightPulse-debug.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NightPulse-debug-apk
+          path: |
+            sleep-monitor-android/app/build/outputs/apk/debug/app-debug.apk
+            sleep-monitor-android/app/build/outputs/apk/debug/NightPulse-debug.apk
+          if-no-files-found: error
+          retention-days: 14
