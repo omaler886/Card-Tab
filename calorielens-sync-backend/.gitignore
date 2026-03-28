@@ -1,0 +1,6 @@
+/.venv/
+/data/
+/server.out.log
+/server.err.log
+/app/__pycache__/
+/app/*.pyc

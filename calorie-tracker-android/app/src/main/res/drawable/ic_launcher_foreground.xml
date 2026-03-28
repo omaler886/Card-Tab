@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="@color/icon_shadow"
+        android:pathData="M16,70c0,14.4 12.2,26 27.2,26h21.6C79.8,96 92,84.4 92,70L92,68c0,-1.1 -0.9,-2 -2,-2L18,66c-1.1,0 -2,0.9 -2,2z" />
+    <path
+        android:fillColor="@color/icon_plate"
+        android:pathData="M18,42c0,-15.5 12.5,-28 28,-28h16c15.5,0 28,12.5 28,28v24H18z" />
+    <path
+        android:fillColor="@color/launcher_accent"
+        android:pathData="M30,34c3.3,-8.6 11.7,-14 21,-14h6c9.3,0 17.7,5.4 21,14z" />
+    <path
+        android:fillColor="@color/launcher_accent"
+        android:pathData="M30,46h48v18c0,8.8 -7.2,16 -16,16H46c-8.8,0 -16,-7.2 -16,-16z" />
+    <path
+        android:fillColor="@color/launcher_leaf"
+        android:pathData="M57,18c10.7,0 19.4,8.7 19.4,19.4c-10.7,0 -19.4,-8.7 -19.4,-19.4z" />
+    <path
+        android:fillColor="@color/launcher_leaf"
+        android:pathData="M49,26c0,10.2 -8.3,18.5 -18.5,18.5C30.5,34.3 38.8,26 49,26z" />
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M48,54h12c2.2,0 4,1.8 4,4v6c0,2.2 -1.8,4 -4,4H48c-2.2,0 -4,-1.8 -4,-4v-6c0,-2.2 1.8,-4 4,-4z" />
+</vector>

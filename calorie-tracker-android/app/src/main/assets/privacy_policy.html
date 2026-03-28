@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CalorieLens 隐私政策</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 24px;
+      line-height: 1.7;
+      color: #251a17;
+      background: #f9f3ec;
+    }
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #fffaf5;
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+    }
+    h1, h2 { color: #cb5c35; }
+    ul { padding-left: 20px; }
+    code {
+      background: #f2e3d4;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>CalorieLens 隐私政策</h1>
+    <p>更新日期：2026-03-28</p>
+    <p>CalorieLens 是一款用于记录饮食、估算卡路里、识别餐食与条码食品信息的 Android 应用。本政策说明应用会处理哪些数据，以及这些数据如何被使用。</p>
+
+    <h2>1. 我们处理的数据</h2>
+    <ul>
+      <li>你手动输入的饮食记录，例如食物名称、热量、份数、营养素和记录时间。</li>
+      <li>你拍照识别时选择的图片，以及从图片中提取出的 OCR 文本。</li>
+      <li>你扫描或输入的条码、食品名称，以及查询返回的营养信息。</li>
+      <li>你填写的个人目标信息，例如年龄、身高、体重、活动量和减脂/维持/增肌目标。</li>
+      <li>若你主动填写 AI 接口信息，应用会保存你配置的 <code>API Key</code>、接口地址和模型名，用于调用你指定的 AI 服务。</li>
+    </ul>
+
+    <h2>2. 数据如何使用</h2>
+    <ul>
+      <li>用于计算每日热量目标、展示历史趋势和判断食谱是否达标。</li>
+      <li>用于识别照片中的餐食、查询条码食品和补充食品数据库结果。</li>
+      <li>用于在本地保存你的记录，便于你查看历史饮食和趋势图表。</li>
+    </ul>
+
+    <h2>3. 本地存储</h2>
+    <p>饮食记录会保存在设备本地的 Room 数据库中；目标设置和 AI 接口设置会保存在设备本地配置中。应用默认不会自动把这些数据上传到开发者服务器。</p>
+
+    <h2>4. 第三方服务</h2>
+    <ul>
+      <li>当你使用条码或文本食品查询时，应用可能会访问 Open Food Facts 和 USDA FoodData Central 获取公开营养数据。</li>
+      <li>当你主动配置并使用 AI 识别时，应用会把你选择的图片、OCR 文本和相关上下文发送到你配置的 AI 接口地址。</li>
+      <li>连续扫码功能会请求相机权限，仅用于本地识别条码。</li>
+    </ul>
+
+    <h2>5. 权限说明</h2>
+    <ul>
+      <li><code>CAMERA</code>：用于连续扫码和拍照识别。</li>
+      <li><code>INTERNET</code>：用于访问食品数据库和你配置的 AI 接口。</li>
+    </ul>
+
+    <h2>6. 你的控制权</h2>
+    <ul>
+      <li>你可以随时删除应用内饮食记录。</li>
+      <li>你可以不填写 AI Key，此时 AI 相关联网识别不会启用。</li>
+      <li>你可以卸载应用以删除本地存储数据。</li>
+    </ul>
+
+    <h2>7. 联系方式</h2>
+    <p>如果你准备上架商店，建议在此处替换为你自己的开发者邮箱或隐私联系地址。</p>
+  </main>
+</body>
+</html>
