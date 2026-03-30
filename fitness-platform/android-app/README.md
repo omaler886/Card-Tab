@@ -22,6 +22,14 @@ cd android-app
 ./gradlew.bat assembleDebug
 ```
 
+如果本机默认 `JAVA_HOME` 指向较新的 JDK 25，包装脚本会优先尝试使用仓库同级的 `jdk21/jdk-21.0.10+7`。
+也可以手动指定：
+
+```powershell
+$env:FITNESS_PLATFORM_JAVA_HOME='D:\path\to\jdk-21'
+.\gradlew.bat assembleDebug
+```
+
 安装生成的 APK 后即可在 Android 设备或模拟器中运行。
 
 ## 代理说明

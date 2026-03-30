@@ -36,6 +36,19 @@ for %%i in ("%APP_HOME%") do set APP_HOME=%%~fi
 @rem Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
 set DEFAULT_JVM_OPTS="-Xmx64m" "-Xms64m"
 
+@rem Prefer an explicit project Java home override or a sibling JDK 21 install when present.
+if defined FITNESS_PLATFORM_JAVA_HOME (
+    set JAVA_HOME=%FITNESS_PLATFORM_JAVA_HOME%
+    goto findJavaFromJavaHome
+)
+
+set REPO_JAVA_HOME=%APP_HOME%\..\..\jdk21\jdk-21.0.10+7
+for %%i in ("%REPO_JAVA_HOME%") do set REPO_JAVA_HOME=%%~fi
+if exist "%REPO_JAVA_HOME%\bin\java.exe" (
+    set JAVA_HOME=%REPO_JAVA_HOME%
+    goto findJavaFromJavaHome
+)
+
 @rem Find java.exe
 if defined JAVA_HOME goto findJavaFromJavaHome
 

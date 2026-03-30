@@ -114,6 +114,13 @@ esac
 
 CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
 
+# Prefer an explicit project Java home override or a sibling JDK 21 install when present.
+if [ -n "$FITNESS_PLATFORM_JAVA_HOME" ] ; then
+    JAVA_HOME=$FITNESS_PLATFORM_JAVA_HOME
+elif [ -x "$APP_HOME/../../jdk21/jdk-21.0.10+7/bin/java" ] ; then
+    JAVA_HOME=$( cd "$APP_HOME/../../jdk21/jdk-21.0.10+7" > /dev/null && pwd -P ) || exit 1
+fi
+
 
 # Determine the Java command to use to start the JVM.
 if [ -n "$JAVA_HOME" ] ; then
