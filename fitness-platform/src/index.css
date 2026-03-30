@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap');
+
+:root {
+  --bg: #f1f6f9;
+  --card-bg: rgba(255, 255, 255, 0.75);
+  --text: #11263c;
+  --muted: #4f657a;
+  --line: #d3e1eb;
+  --accent: #1f7a8c;
+  font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+  line-height: 1.45;
+  font-weight: 400;
+  color: var(--text);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 14% -10%, rgba(31, 122, 140, 0.26), transparent 40%),
+    radial-gradient(circle at 90% 18%, rgba(255, 183, 3, 0.18), transparent 28%),
+    var(--bg);
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Sora', 'IBM Plex Sans', sans-serif;
+}
+
+#root {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 18px;
+}
