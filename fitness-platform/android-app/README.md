@@ -32,6 +32,26 @@ $env:FITNESS_PLATFORM_JAVA_HOME='D:\path\to\jdk-21'
 
 安装生成的 APK 后即可在 Android 设备或模拟器中运行。
 
+## Release APK
+
+如果要本地构建正式签名的 release APK，在 `android-app/` 下准备一个不会入库的 `keystore.properties`：
+
+```properties
+storeFile=signing/fitness-plan-release.jks
+storePassword=...
+keyAlias=fitness-plan
+keyPassword=...
+```
+
+然后执行：
+
+```bash
+cd android-app
+./gradlew.bat clean assembleRelease
+```
+
+仓库内的 GitHub Actions 也支持在 tag 推送时自动构建并发布签名后的 release APK。
+
 ## 代理说明
 
 - `Master Agent`：检查子代理健康度、发现超时或失败任务并重启

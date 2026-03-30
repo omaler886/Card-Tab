@@ -37,6 +37,15 @@ cd android-app
 ./gradlew.bat assembleDebug
 ```
 
+正式 APK 发布：
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+`fitness-platform/.github/workflows/release-android.yml` 会在 tag 推送后自动构建并上传签名后的 release APK 到 GitHub Release。
+
 ## 运行方式
 
 ```bash
